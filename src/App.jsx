@@ -17,7 +17,6 @@ function App() {
   });
   
   const [user, setUser] = useState({ first_name: "TapPlayer", username: "" });
-  const [wallet, setWallet] = useState(null);
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -37,21 +36,19 @@ function App() {
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
 
-  // --- ADSGRAM LOGIC (BE EKSISA MAALLAQAArgachiisu) ---
+  // --- ADSGRAM LOGIC (BLOCK ID KEE GALCHEE JIRA) ---
   const showAd = () => {
-    // Bakka "YOUR_BLOCK_ID" jedhu kanatti koodii AdsGram irraa fiddu galchi
-    const AdController = window.Adsgram?.init({ blockId: "YOUR_BLOCK_ID" });
+    const AdController = window.Adsgram?.init({ blockId: "af9c1410f5804f05a895e56b4cb65f1e" });
 
     if (AdController) {
       AdController.show().then((result) => {
         setBalance(prev => prev + 5000);
         alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
       }).catch((error) => {
-        alert("Beeksisa xumuruu qabda ykn rakkoon uumame.");
-        console.error(error);
+        alert("Beeksisa xumuruu qabda!");
       });
     } else {
-      alert("AdsGram SDK hin fe'amne. index.html mirkaneessi.");
+      alert("Ads SDK hin fe'amne. index.html mirkaneessi.");
     }
   };
 
@@ -101,12 +98,12 @@ function App() {
         </div>
       )}
 
-      {/* Tasks Tab (Beeksisa Waliin) */}
+      {/* Tasks Tab */}
       {tab === 'tasks' && (
         <div style={{ textAlign: 'left' }}>
           <h3>Tasks & Rewards</h3>
           <div style={{ background: '#222', padding: '15px', borderRadius: '15px', marginBottom: '10px' }}>
-            <p>Watch Ad & Earn</p>
+            <p>Watch Ad & Earn Maallaqa</p>
             <button onClick={showAd} style={{ width: '100%', padding: '12px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
               Watch Video (+5000 🪙)
             </button>
@@ -117,7 +114,7 @@ function App() {
         </div>
       )}
 
-      {/* Upgrade/Boost Tab */}
+      {/* Boost Tab */}
       {tab === 'upgrade' && (
         <div>
           <h3>Boost Level</h3>
@@ -146,7 +143,7 @@ function App() {
       )}
 
       {/* Navigation */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', background: '#111', padding: '10px 0' }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', background: '#111', padding: '10px 0', borderTop: '1px solid #333' }}>
         <button onClick={() => setTab('home')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'home' ? '#f1c40f' : 'white' }}>Home</button>
         <button onClick={() => setTab('tasks')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'tasks' ? '#f1c40f' : 'white' }}>Tasks</button>
         <button onClick={() => setTab('upgrade')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'upgrade' ? '#f1c40f' : 'white' }}>Boost</button>
