@@ -31,12 +31,29 @@ function App() {
     }
   }, []);
 
-  // Data hunda save gochuu
   useEffect(() => {
     localStorage.setItem('balance', balance.toString());
     localStorage.setItem('level', level.toString());
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
+
+  // --- ADSGRAM LOGIC (BE EKSISA MAALLAQAArgachiisu) ---
+  const showAd = () => {
+    // Bakka "YOUR_BLOCK_ID" jedhu kanatti koodii AdsGram irraa fiddu galchi
+    const AdController = window.Adsgram?.init({ blockId: "YOUR_BLOCK_ID" });
+
+    if (AdController) {
+      AdController.show().then((result) => {
+        setBalance(prev => prev + 5000);
+        alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
+      }).catch((error) => {
+        alert("Beeksisa xumuruu qabda ykn rakkoon uumame.");
+        console.error(error);
+      });
+    } else {
+      alert("AdsGram SDK hin fe'amne. index.html mirkaneessi.");
+    }
+  };
 
   const handleTap = () => {
     setBalance(prev => prev + tapValue);
@@ -45,20 +62,12 @@ function App() {
     }
   };
 
-  // Deposit Logic (Level Dabaluuf)
   const handleDepositLevelUp = () => {
-    const amount = 0.5; // Fakkeenyaaf 0.5 TON
-    const confirmPay = window.confirm(`Level ${level + 1} gahuuf ${amount} TON deposit gochuu barbaadduu?`);
-    
+    const confirmPay = window.confirm(`Level ${level + 1} gahuuf 0.5 TON deposit gochuu barbaadduu?`);
     if (confirmPay) {
-      // Asirratti kaffaltiin TON kallaattiin gara herrega keetti akka dabu godhama
-      alert("Gara Telegram Wallet sigeessaa jira...");
-      window.open(`https://t.me/wallet?startapp=deposit_${amount}`, '_blank');
-      
-      // Kaffaltiin yoo mirkanaaye Level ni dabala
+      window.open(`https://t.me/wallet/start?startapp=deposit`, '_blank');
       setLevel(prev => prev + 1);
-      setTapValue(prev => prev + 2); // Tap power ni dabala
-      setBalance(prev => prev + 5000); // Bonus bonus ni kennama
+      setTapValue(prev => prev + 2);
     }
   };
 
@@ -73,12 +82,7 @@ function App() {
           <span>👤 {user.first_name}</span><br/>
           <small style={{ color: '#f1c40f' }}>Level {level}</small>
         </div>
-        <button 
-          onClick={() => setTab('wallet')}
-          style={{ background: '#0088cc', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '10px', fontWeight: 'bold' }}
-        >
-          {wallet ? "Connected" : "Wallet"}
-        </button>
+        <button onClick={() => setTab('wallet')} style={{ background: '#0088cc', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '10px' }}>Wallet</button>
       </div>
 
       {/* Home Tab */}
@@ -93,51 +97,33 @@ function App() {
               backgroundColor: '#f1c40f', border: '8px solid #d4ac0d', cursor: 'pointer',
               boxShadow: '0 0 30px rgba(241, 196, 15, 0.5)'
             }}
-          >
-            TAP!
-          </button>
+          >TAP!</button>
         </div>
       )}
 
-      {/* Tasks Tab */}
+      {/* Tasks Tab (Beeksisa Waliin) */}
       {tab === 'tasks' && (
         <div style={{ textAlign: 'left' }}>
           <h3>Tasks & Rewards</h3>
+          <div style={{ background: '#222', padding: '15px', borderRadius: '15px', marginBottom: '10px' }}>
+            <p>Watch Ad & Earn</p>
+            <button onClick={showAd} style={{ width: '100%', padding: '12px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
+              Watch Video (+5000 🪙)
+            </button>
+          </div>
           <button onClick={() => setBalance(balance + 1000)} style={{ width: '100%', padding: '15px', borderRadius: '10px', background: '#27ae60', color: 'white', border: 'none' }}>
-            Claim Daily Reward +1000 🎁
+            Daily Reward +1000 🎁
           </button>
         </div>
       )}
 
-      {/* Upgrade/Deposit Tab */}
+      {/* Upgrade/Boost Tab */}
       {tab === 'upgrade' && (
         <div>
-          <h3>Boost Your Level</h3>
-          <div style={{ background: '#222', padding: '20px', borderRadius: '15px', marginBottom: '10px' }}>
-            <p>Current Level: {level}</p>
-            <p style={{ fontSize: '12px', color: '#aaa' }}>Deposit TON to level up instantly and get +2 Tap Power!</p>
-            <button 
-              onClick={handleDepositLevelUp}
-              style={{ width: '100%', padding: '15px', background: '#f39c12', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}
-            >
-              Deposit 0.5 TON to Level Up 🚀
-            </button>
-          </div>
-          
-          <div style={{ background: '#222', padding: '20px', borderRadius: '15px' }}>
-            <p>Multitap Upgrade</p>
-            <button 
-              onClick={() => {
-                if (balance >= 500) {
-                  setBalance(balance - 500);
-                  setTapValue(tapValue + 1);
-                } else { alert("Koiniin kee hin ga'u!"); }
-              }}
-              style={{ padding: '10px 20px', background: '#e67e22', border: 'none', color: 'white', borderRadius: '10px' }}
-            >
-              Upgrade with 500 🪙
-            </button>
-          </div>
+          <h3>Boost Level</h3>
+          <button onClick={handleDepositLevelUp} style={{ width: '100%', padding: '15px', background: '#f39c12', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', marginBottom: '10px' }}>
+            Deposit 0.5 TON to Level Up 🚀
+          </button>
         </div>
       )}
 
@@ -145,11 +131,7 @@ function App() {
       {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
           <h2>Invite & Earn</h2>
-          <p>Get +2000 per invite!</p>
-          <button 
-            onClick={() => window.open(`https://t.me/share/url?url=${botLink}&text=Ethio Coin waliin sassaabbadhu!`, '_blank')} 
-            style={{ display: 'block', width: '100%', padding: '15px', background: '#3498db', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}
-          >
+          <button onClick={() => window.open(`https://t.me/share/url?url=${botLink}&text=Ethio Coin sassaabbadhu!`, '_blank')} style={{ width: '100%', padding: '15px', background: '#3498db', color: 'white', border: 'none', borderRadius: '10px' }}>
             Invite a Friend 🚀
           </button>
         </div>
@@ -159,20 +141,12 @@ function App() {
       {tab === 'wallet' && (
         <div style={{ marginTop: '40px' }}>
           <h2>TON Wallet</h2>
-          <div style={{ background: '#222', padding: '20px', borderRadius: '15px' }}>
-            <p>Balance: 0.00 TON</p>
-            <button 
-              onClick={() => alert("Connecting to TON Wallet...")}
-              style={{ width: '100%', padding: '15px', background: '#0088cc', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}
-            >
-              Connect Wallet
-            </button>
-          </div>
+          <button onClick={() => alert("Connecting...")} style={{ width: '100%', padding: '15px', background: '#0088cc', color: 'white', border: 'none', borderRadius: '10px' }}>Connect Wallet</button>
         </div>
       )}
 
       {/* Navigation */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', background: '#111', padding: '10px 0', borderTop: '1px solid #333' }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', background: '#111', padding: '10px 0' }}>
         <button onClick={() => setTab('home')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'home' ? '#f1c40f' : 'white' }}>Home</button>
         <button onClick={() => setTab('tasks')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'tasks' ? '#f1c40f' : 'white' }}>Tasks</button>
         <button onClick={() => setTab('upgrade')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'upgrade' ? '#f1c40f' : 'white' }}>Boost</button>
