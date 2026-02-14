@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [balance, setBalance] = useState(0);
+  // 1. Koiniin akka hin banne localStorage irraa fiduu
+  const [balance, setBalance] = useState(() => {
+    const savedBalance = localStorage.getItem('balance');
+    return savedBalance ? parseInt(savedBalance) : 0;
+  });
+
   const [tab, setTab] = useState('home');
   const [level, setLevel] = useState(1);
   const [tapValue, setTapValue] = useState(1);
   const [user, setUser] = useState({ first_name: "TapPlayer", username: "" });
 
-  // 1. Telegram User Data & Vibration Logic
+  // 2. Telegram User Data & Vibration Logic
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -23,6 +28,11 @@ function App() {
     }
   }, []);
 
+  // 3. Koinni yeroo jijjiiramu hunda bilbila keessatti save gochuu
+  useEffect(() => {
+    localStorage.setItem('balance', balance.toString());
+  }, [balance]);
+
   const handleTap = () => {
     setBalance(prev => prev + tapValue);
     // Vibration Effect
@@ -31,7 +41,6 @@ function App() {
     }
   };
 
-  // 2. Daily Reward Logic
   const claimDaily = () => {
     const lastClaim = localStorage.getItem('lastClaim');
     const today = new Date().toDateString();
@@ -44,7 +53,7 @@ function App() {
     }
   };
 
-  // Maqaa Bot keetiin sirreeffameera
+  // Bot Link kee isa sirrii @Ethio_Coin1_bot
   const botLink = "https://t.me/Ethio_Coin1_bot"; 
 
   return (
@@ -112,7 +121,7 @@ function App() {
         </div>
       )}
 
-      {/* Invite Tab - Linkii sirreeffame */}
+      {/* Invite Tab - Fixed Bot Link */}
       {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
           <h2>Invite & Earn</h2>
