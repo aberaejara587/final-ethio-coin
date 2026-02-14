@@ -5,7 +5,6 @@ function App() {
   const [tab, setTab] = useState('home');
   const [level, setLevel] = useState(1);
   const [tapValue, setTapValue] = useState(1);
-  // Username yoo hin jirre akka 'Guest' ta'u qopheessine
   const [user, setUser] = useState({ first_name: "TapPlayer", username: "" });
 
   // 1. Telegram User Data & Vibration Logic
@@ -18,7 +17,7 @@ function App() {
       if (userData) {
         setUser({
           first_name: userData.first_name,
-          username: userData.username || "" // Username yoo hin jirre duwwaa hafe
+          username: userData.username || "" 
         });
       }
     }
@@ -45,7 +44,8 @@ function App() {
     }
   };
 
-  const botLink = "https://t.me/aberaejara587_bot"; 
+  // Maqaa Bot keetiin sirreeffameera
+  const botLink = "https://t.me/Ethio_Coin1_bot"; 
 
   return (
     <div style={{ textAlign: 'center', fontFamily: 'Arial', padding: '20px', color: 'white', backgroundColor: '#000', minHeight: '100vh' }}>
@@ -112,7 +112,7 @@ function App() {
         </div>
       )}
 
-      {/* Invite Tab - Linkii 'Username Not Found' balleessuuf qindaaye */}
+      {/* Invite Tab - Linkii sirreeffame */}
       {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
           <h2>Invite & Earn</h2>
