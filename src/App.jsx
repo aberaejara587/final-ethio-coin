@@ -5,18 +5,24 @@ function App() {
   const [tab, setTab] = useState('home');
   const [level, setLevel] = useState(1);
   const [tapValue, setTapValue] = useState(1);
-  const [user, setUser] = useState({ first_name: "TapPlayer" });
+  const [user, setUser] = useState({ first_name: "TapPlayer", username: "Guest" });
 
   // 1. Telegram User Data & Vibration
+  
   useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.expand();
-      if (tg.initDataUnsafe?.user) {
-        setUser(tg.initDataUnsafe.user);
-      }
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    const userData = tg.initDataUnsafe?.user;
+    if (userData) {
+      setUser({
+        first_name: userData.first_name,
+        username: userData.username || "Guest"
+      });
     }
-  }, []);
+  }
+}, []);
 
   const handleTap = () => {
     setBalance(prev => prev + tapValue);
@@ -105,9 +111,7 @@ function App() {
 
       {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
-          <h2>Invite & Earn</h2>
-          <p>Share with friends and get +2000 per invite!</p>
-          <a href={`https://t.me/share/url?url=${botLink}&text=Ethio Coin waliin koinni sassaabbadhu!`} 
+<a href={`https://t.me/share/url?url=${botLink}&text=Koottuu koinni waliin sassaabbannu! Username koo: @${user.username}`} ...
              style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
             Invite a Friend 🚀
           </a>
