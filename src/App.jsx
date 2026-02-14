@@ -7,32 +7,31 @@ function App() {
   const [tapValue, setTapValue] = useState(1);
   const [user, setUser] = useState({ first_name: "TapPlayer", username: "Guest" });
 
-  // 1. Telegram User Data & Vibration
-  
+  // 1. Telegram User Data & Vibration Logic
   useEffect(() => {
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
-    const userData = tg.initDataUnsafe?.user;
-    if (userData) {
-      setUser({
-        first_name: userData.first_name,
-        username: userData.username || "Guest"
-      });
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      const userData = tg.initDataUnsafe?.user;
+      if (userData) {
+        setUser({
+          first_name: userData.first_name,
+          username: userData.username || "Guest"
+        });
+      }
     }
-  }
-}, []);
+  }, []);
 
   const handleTap = () => {
     setBalance(prev => prev + tapValue);
-    // 2. Vibration Effect
+    // Vibration Effect
     if (window.Telegram?.WebApp?.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
     }
   };
 
-  // 3. Daily Reward Logic
+  // 2. Daily Reward Logic
   const claimDaily = () => {
     const lastClaim = localStorage.getItem('lastClaim');
     const today = new Date().toDateString();
@@ -45,16 +44,18 @@ function App() {
     }
   };
 
-  const botLink = "https://t.me/aberaejara587_bot"; // Linkii bot keetiin bakka buusi
+  const botLink = "https://t.me/aberaejara587_bot"; 
 
   return (
     <div style={{ textAlign: 'center', fontFamily: 'Arial', padding: '20px', color: 'white', backgroundColor: '#000', minHeight: '100vh' }}>
+      
       {/* Header with User Info */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#222', padding: '10px', borderRadius: '15px' }}>
         <span>👤 {user.first_name}</span>
         <span style={{ color: '#f1c40f' }}>Lv. {level}</span>
       </div>
 
+      {/* Home Tab */}
       {tab === 'home' && (
         <div style={{ marginTop: '40px' }}>
           <div style={{ fontSize: '50px', fontWeight: 'bold' }}>🪙 {balance}</div>
@@ -72,7 +73,7 @@ function App() {
         </div>
       )}
 
-      {/* 4. Leaderboard & Tasks Tab Combined */}
+      {/* Leaderboard & Tasks Tab */}
       {tab === 'tasks' && (
         <div style={{ textAlign: 'left' }}>
           <h3>Daily Reward</h3>
@@ -89,6 +90,7 @@ function App() {
         </div>
       )}
 
+      {/* Upgrade Tab */}
       {tab === 'upgrade' && (
         <div>
           <h3>Upgrades</h3>
@@ -109,7 +111,8 @@ function App() {
         </div>
       )}
 
-{tab === 'invite' && (
+      {/* Invite Tab - Fixed Syntax Error */}
+      {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
           <h2>Invite & Earn</h2>
           <p>Share with friends and get +2000 per invite!</p>
@@ -117,11 +120,6 @@ function App() {
             href={`https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodeURIComponent(`Koottuu koinni waliin sassaabbannu! Username koo: @${user.username}`)}`} 
             style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}
           >
-            Invite a Friend 🚀
-          </a>
-        </div>
-      )}
-             style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
             Invite a Friend 🚀
           </a>
         </div>
@@ -134,6 +132,7 @@ function App() {
         <button onClick={() => setTab('upgrade')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'upgrade' ? '#f1c40f' : 'white' }}>Upgrade</button>
         <button onClick={() => setTab('invite')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'invite' ? '#f1c40f' : 'white' }}>Invite</button>
       </div>
+
     </div>
   );
 }
