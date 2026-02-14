@@ -109,9 +109,18 @@ function App() {
         </div>
       )}
 
-      {tab === 'invite' && (
+{tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
-<a href={`https://t.me/share/url?url=${botLink}&text=Koottuu koinni waliin sassaabbannu! Username koo: @${user.username}`} ...
+          <h2>Invite & Earn</h2>
+          <p>Share with friends and get +2000 per invite!</p>
+          <a 
+            href={`https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodeURIComponent(`Koottuu koinni waliin sassaabbannu! Username koo: @${user.username}`)}`} 
+            style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}
+          >
+            Invite a Friend 🚀
+          </a>
+        </div>
+      )}
              style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
             Invite a Friend 🚀
           </a>
