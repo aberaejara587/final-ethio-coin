@@ -5,7 +5,8 @@ function App() {
   const [tab, setTab] = useState('home');
   const [level, setLevel] = useState(1);
   const [tapValue, setTapValue] = useState(1);
-  const [user, setUser] = useState({ first_name: "TapPlayer", username: "Guest" });
+  // Username yoo hin jirre akka 'Guest' ta'u qopheessine
+  const [user, setUser] = useState({ first_name: "TapPlayer", username: "" });
 
   // 1. Telegram User Data & Vibration Logic
   useEffect(() => {
@@ -17,7 +18,7 @@ function App() {
       if (userData) {
         setUser({
           first_name: userData.first_name,
-          username: userData.username || "Guest"
+          username: userData.username || "" // Username yoo hin jirre duwwaa hafe
         });
       }
     }
@@ -111,17 +112,21 @@ function App() {
         </div>
       )}
 
-      {/* Invite Tab - Fixed Syntax Error */}
+      {/* Invite Tab - Linkii 'Username Not Found' balleessuuf qindaaye */}
       {tab === 'invite' && (
         <div style={{ marginTop: '40px' }}>
           <h2>Invite & Earn</h2>
           <p>Share with friends and get +2000 per invite!</p>
-          <a 
-            href={`https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodeURIComponent(`Koottuu koinni waliin sassaabbannu! Username koo: @${user.username}`)}`} 
-            style={{ display: 'block', padding: '15px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '10px', fontWeight: 'bold' }}
+          <button 
+            onClick={() => {
+              const text = encodeURIComponent(`Koottuu Ethio Coin waliin koinni sassaabbadhu! Maqaa koo: ${user.first_name}`);
+              const url = `https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${text}`;
+              window.open(url, '_blank');
+            }} 
+            style={{ display: 'block', width: '100%', padding: '15px', background: '#3498db', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
           >
             Invite a Friend 🚀
-          </a>
+          </button>
         </div>
       )}
 
