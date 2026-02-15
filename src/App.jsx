@@ -15,9 +15,10 @@ function App() {
     const savedTap = localStorage.getItem('tapValue');
     return savedTap ? parseInt(savedTap) : 1;
   });
-  
+
   const [user, setUser] = useState({ first_name: "TapPlayer", username: "" });
 
+  // Telegram WebApp init
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -30,26 +31,38 @@ function App() {
     }
   }, []);
 
+  // ADSGRAM SDK LOAD (IMPORTANT)
+  useEffect(() => {
+    if (!window.Adsgram) {
+      const script = document.createElement("script");
+      script.src = "https://adsgram.ai/sdk.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('balance', balance.toString());
     localStorage.setItem('level', level.toString());
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
 
-  // --- ADSGRAM LOGIC (BLOCK ID: 22986) ---
+  // ADSGRAM SHOW AD
   const showAd = () => {
     if (window.Adsgram) {
-      // Block ID haaraa kanaan bakka bu'eera
       const AdController = window.Adsgram.init({ blockId: "22986" });
-      
-      AdController.show().then((result) => {
-        setBalance(prev => prev + 5000);
-        alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
-      }).catch((error) => {
-        alert("Beeksisa xumuruu qabda!");
-      });
+
+      AdController.show()
+        .then(() => {
+          setBalance(prev => prev + 5000);
+          alert("Ad ilaalte! +5000 🪙");
+        })
+        .catch(() => {
+          alert("Ad xumuruu qabda.");
+        });
+
     } else {
-      alert("SDK ammayyuu hin fe'amne. Maaloo daqiiqaa 1 eegii 'Reload' godhi.");
+      alert("Adsgram SDK hin fe'amne.");
     }
   };
 
@@ -60,98 +73,17 @@ function App() {
     }
   };
 
-  const handleDepositLevelUp = () => {
-    const confirmPay = window.confirm(`Level ${level + 1} gahuuf 0.5 TON deposit gochuu barbaadduu?`);
-    if (confirmPay) {
-      window.open(`https://t.me/wallet/start?startapp=deposit`, '_blank');
-      setLevel(prev => prev + 1);
-      setTapValue(prev => prev + 2);
-    }
-  };
-
-  const botLink = "https://t.me/Ethio_Coin1_bot";
-
   return (
-    <div style={{ textAlign: 'center', fontFamily: 'Arial', padding: '20px', color: 'white', backgroundColor: '#000', minHeight: '100vh' }}>
-      
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#222', padding: '10px', borderRadius: '15px' }}>
-        <div>
-          <span>👤 {user.first_name}</span><br/>
-          <small style={{ color: '#f1c40f' }}>Level {level}</small>
-        </div>
-        <button onClick={() => setTab('wallet')} style={{ background: '#0088cc', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '10px' }}>Wallet</button>
-      </div>
+    <div style={{ textAlign: 'center', background: '#000', color: 'white', minHeight: '100vh', padding: '20px' }}>
+      <h2>👋 {user.first_name}</h2>
+      <h1>🪙 {balance}</h1>
 
-      {/* Home Tab */}
-      {tab === 'home' && (
-        <div style={{ marginTop: '40px' }}>
-          <div style={{ fontSize: '50px', fontWeight: 'bold' }}>🪙 {balance}</div>
-          <p style={{ color: '#aaa' }}>Tap Power: +{tapValue}</p>
-          <button 
-            onClick={handleTap}
-            style={{ 
-              marginTop: '20px', padding: '40px', borderRadius: '50%', fontSize: '25px', 
-              backgroundColor: '#f1c40f', border: '8px solid #d4ac0d', cursor: 'pointer',
-              boxShadow: '0 0 30px rgba(241, 196, 15, 0.5)'
-            }}
-          >TAP!</button>
-        </div>
-      )}
+      <button onClick={handleTap}>TAP</button>
+      <br /><br />
 
-      {/* Tasks Tab */}
-      {tab === 'tasks' && (
-        <div style={{ textAlign: 'left' }}>
-          <h3>Tasks & Rewards</h3>
-          <div style={{ background: '#222', padding: '15px', borderRadius: '15px', marginBottom: '10px' }}>
-            <p>Watch Ad & Earn Maallaqa</p>
-            <button onClick={showAd} style={{ width: '100%', padding: '12px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold' }}>
-              Watch Video (+5000 🪙)
-            </button>
-          </div>
-          <button onClick={() => setBalance(balance + 1000)} style={{ width: '100%', padding: '15px', borderRadius: '10px', background: '#27ae60', color: 'white', border: 'none' }}>
-            Daily Reward +1000 🎁
-          </button>
-        </div>
-      )}
-
-      {/* Boost Tab */}
-      {tab === 'upgrade' && (
-        <div>
-          <h3>Boost Level</h3>
-          <button onClick={handleDepositLevelUp} style={{ width: '100%', padding: '15px', background: '#f39c12', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', marginBottom: '10px' }}>
-            Deposit 0.5 TON to Level Up 🚀
-          </button>
-        </div>
-      )}
-
-      {/* Invite Tab */}
-      {tab === 'invite' && (
-        <div style={{ marginTop: '40px' }}>
-          <h2>Invite & Earn</h2>
-          <button onClick={() => window.open(`https://t.me/share/url?url=${botLink}&text=Ethio Coin sassaabbadhu!`, '_blank')} style={{ width: '100%', padding: '15px', background: '#3498db', color: 'white', border: 'none', borderRadius: '10px' }}>
-            Invite a Friend 🚀
-          </button>
-        </div>
-      )}
-
-      {/* Wallet Tab */}
-      {tab === 'wallet' && (
-        <div style={{ marginTop: '40px' }}>
-          <h2>TON Wallet</h2>
-          <button onClick={() => alert("Connecting...")} style={{ width: '100%', padding: '15px', background: '#0088cc', color: 'white', border: 'none', borderRadius: '10px' }}>Connect Wallet</button>
-        </div>
-      )}
-
-      {/* Navigation */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', background: '#111', padding: '10px 0', borderTop: '1px solid #333' }}>
-        <button onClick={() => setTab('home')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'home' ? '#f1c40f' : 'white' }}>Home</button>
-        <button onClick={() => setTab('tasks')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'tasks' ? '#f1c40f' : 'white' }}>Tasks</button>
-        <button onClick={() => setTab('upgrade')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'upgrade' ? '#f1c40f' : 'white' }}>Boost</button>
-        <button onClick={() => setTab('invite')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'invite' ? '#f1c40f' : 'white' }}>Invite</button>
-        <button onClick={() => setTab('wallet')} style={{ flex: 1, background: 'none', border: 'none', color: tab === 'wallet' ? '#0088cc' : 'white' }}>Wallet</button>
-      </div>
-
+      <button onClick={showAd}>
+        Watch Ad (+5000)
+      </button>
     </div>
   );
 }
