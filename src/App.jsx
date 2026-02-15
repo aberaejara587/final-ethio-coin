@@ -36,17 +36,16 @@ function App() {
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
 
-  // --- ADSGRAM LOGIC (BLOCK ID HAARAA: 22986) ---
+  // --- ADSGRAM LOGIC (BLOCK ID: 22986) ---
   const showAd = () => {
     if (window.Adsgram) {
-      // Block ID haaraa Adsgram irraa argatte (22986) asitti galchameera
+      // Block ID haaraa kanaan bakka bu'eera
       const AdController = window.Adsgram.init({ blockId: "22986" });
       
       AdController.show().then((result) => {
         setBalance(prev => prev + 5000);
         alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
       }).catch((error) => {
-        // Yoo beeksisa gidduutti dhiisan
         alert("Beeksisa xumuruu qabda!");
       });
     } else {
