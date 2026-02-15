@@ -36,11 +36,12 @@ function App() {
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
 
-  // --- ADSGRAM LOGIC (BLOCK ID KEE GALCHEE JIRA) ---
+  // --- ADSGRAM LOGIC (STRICT SDK CHECK) ---
   const showAd = () => {
-    const AdController = window.Adsgram?.init({ blockId: "af9c1410f5804f05a895e56b4cb65f1e" });
-
-    if (AdController) {
+    // Jalqaba window.Adsgram jiraachuu isaa mirkaneessi
+    if (window.Adsgram) {
+      const AdController = window.Adsgram.init({ blockId: "af9c1410f5804f05a895e56b4cb65f1e" });
+      
       AdController.show().then((result) => {
         setBalance(prev => prev + 5000);
         alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
@@ -48,7 +49,8 @@ function App() {
         alert("Beeksisa xumuruu qabda!");
       });
     } else {
-      alert("Ads SDK hin fe'amne. index.html mirkaneessi.");
+      // Yoo SDK-n hin fe'amin, "Manual Refresh" akka godhan gorsi
+      alert("SDK ammayyuu hin fe'amne. Maaloo daqiiqaa 1 eegii 'Reload' godhi.");
     }
   };
 
