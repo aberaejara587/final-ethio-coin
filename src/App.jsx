@@ -36,20 +36,20 @@ function App() {
     localStorage.setItem('tapValue', tapValue.toString());
   }, [balance, level, tapValue]);
 
-  // --- ADSGRAM LOGIC (STRICT SDK CHECK) ---
+  // --- ADSGRAM LOGIC (BLOCK ID HAARAA: 22986) ---
   const showAd = () => {
-    // Jalqaba window.Adsgram jiraachuu isaa mirkaneessi
     if (window.Adsgram) {
-      const AdController = window.Adsgram.init({ blockId: "af9c1410f5804f05a895e56b4cb65f1e" });
+      // Block ID haaraa Adsgram irraa argatte (22986) asitti galchameera
+      const AdController = window.Adsgram.init({ blockId: "22986" });
       
       AdController.show().then((result) => {
         setBalance(prev => prev + 5000);
         alert("Baga gammadde! Beeksisa daawwattee +5000 🪙 argatteetta.");
       }).catch((error) => {
+        // Yoo beeksisa gidduutti dhiisan
         alert("Beeksisa xumuruu qabda!");
       });
     } else {
-      // Yoo SDK-n hin fe'amin, "Manual Refresh" akka godhan gorsi
       alert("SDK ammayyuu hin fe'amne. Maaloo daqiiqaa 1 eegii 'Reload' godhi.");
     }
   };
