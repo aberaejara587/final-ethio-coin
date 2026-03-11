@@ -10,51 +10,84 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts & Styles (Kutaa kun kan durii waliin walfakkaata) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ... (Styles kee kan durii asitti hafe, jijjiirama hin barbaachisu) ... */
         :root {
-            --bg-void: #05080d; --bg-surface: #0a0f18; --bg-elevated: #111927;
-            --glass-bg: rgba(14, 22, 35, 0.65); --glass-border: rgba(255, 255, 255, 0.06);
-            --text-primary: #f1f5f9; --text-secondary: #94a3b8;
-            --accent-gold: #e5b12e; --accent-teal: #22d3ee;
+            --bg-void: #05080d;
+            --bg-surface: #0a0f18;
+            --bg-elevated: #111927;
+            --glass-bg: rgba(14, 22, 35, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-gold: #e5b12e;
+            --accent-teal: #22d3ee;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-void); color: var(--text-primary); overflow-x: hidden; min-height: 100vh; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-void);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
         .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
         .bg-gradient-layer { background: radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%); }
         .bg-grid-layer { background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 70%); }
+
         #particles-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .font-display { font-family: 'Syne', sans-serif; }
-        .glass-premium { background: var(--glass-bg); backdrop-filter: blur(24px) saturate(1.4); border: 1px solid var(--glass-border); border-radius: 1.5rem; position: relative; overflow: hidden; }
+
+        .glass-premium {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px) saturate(1.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
         .nav-glass { background: rgba(8, 12, 20, 0.85); backdrop-filter: blur(32px); border-top: 1px solid rgba(255, 255, 255, 0.05); }
         .top-bar-glass { background: rgba(8, 12, 20, 0.75); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
         .page { display: none; min-height: 100vh; padding-bottom: 140px; position: relative; z-index: 10; }
         .page.active { display: block; animation: pageReveal 0.5s ease-out; }
+
         @keyframes pageReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-primary { background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a41a 100%); color: #0a0f18; font-weight: 700; border-radius: 1rem; padding: 1.25rem; transition: all 0.2s; box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a41a 100%);
+            color: #0a0f18;
+            font-weight: 700;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.2s;
+            box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
+        }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
         .accent-line { width: 4px; height: 100%; position: absolute; left: 0; top: 0; }
         .accent-gold { background: var(--accent-gold); }
         .accent-teal { background: var(--accent-teal); }
+        
         .progress-ring-fill { stroke: var(--accent-teal); transition: stroke-dashoffset 0.5s ease; }
         .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; }
         .input-premium { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 1.125rem; color: white; }
     </style>
 </head>
 <body class="no-scrollbar">
-    <!-- Backgrounds -->
     <div class="bg-layer bg-gradient-layer"></div>
     <div class="bg-layer bg-grid-layer"></div>
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Header -->
     <header class="top-bar-glass fixed top-0 w-full z-50 px-5 py-4">
         <div class="max-w-lg mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -72,9 +105,7 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="relative z-10">
-        <!-- HOME PAGE -->
         <section id="page-home" class="page active pt-24 px-5">
             <div class="max-w-lg mx-auto space-y-5">
                 <div class="glass-premium p-6 relative">
@@ -92,10 +123,24 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="glass-premium p-5 flex items-center gap-4">
+                    <div class="accent-line accent-teal"></div>
+                    <div class="relative w-12 h-12">
+                        <svg viewBox="0 0 36 36" class="w-12 h-12">
+                            <path class="stroke-slate-800" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="quest-progress" class="progress-ring-fill" stroke-width="3" stroke-dasharray="100, 100" stroke-dashoffset="100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center text-[10px]" id="quest-count">0/10</div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Daily Quest</h3>
+                        <p class="text-xs text-slate-400">Watch 10 ads for +500 ETC</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- WATCH ADS PAGE -->
         <section id="page-watch" class="page pt-24 px-5">
             <div class="max-w-lg mx-auto">
                 <div class="glass-premium p-8 text-center relative">
@@ -111,7 +156,6 @@
             </div>
         </section>
 
-        <!-- INVITE PAGE -->
         <section id="page-invite" class="page pt-24 px-5">
              <div class="max-w-lg mx-auto glass-premium p-6">
                 <h3 class="text-xl font-bold mb-4">Invite Friends</h3>
@@ -119,7 +163,6 @@
              </div>
         </section>
         
-        <!-- WALLET PAGE -->
         <section id="page-wallet" class="page pt-24 px-5">
              <div class="max-w-lg mx-auto glass-premium p-6">
                 <h3 class="text-xl font-bold mb-4">Withdraw</h3>
@@ -129,7 +172,6 @@
         </section>
     </main>
 
-    <!-- Navigation -->
     <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
         <div class="max-w-lg mx-auto flex justify-around">
             <button class="nav-item active flex flex-col items-center" data-page="home"><span class="text-[10px] font-bold">HOME</span></button>
@@ -139,50 +181,90 @@
         </div>
     </nav>
 
-    <!-- SCRIPTS -->
     <script>
-        // --- 1. Variables & State ---
+        // State
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
         const tg = window.Telegram?.WebApp;
         let AdController = null;
 
-        // Initialize Telegram WebApp
+        // Telegram Init
         if (tg) { tg.ready(); tg.expand(); }
 
-        // --- 2. DOM Elements ---
+        // DOM Elements
         const totalBalanceEl = document.getElementById('total-balance');
         const adsCountEl = document.getElementById('ads-count');
         const statusMsg = document.getElementById('status-msg');
         const adBtn = document.getElementById('adBtn');
 
-        // --- 3. Adsgram Initialization (The Fix) ---
+        // --- CORRECTED ADGRAM INITIALIZATION ---
         function initAdsgram() {
-            // Make sure the SDK script is loaded
-            if (!window.Adsgram) {
-                console.error("Adsgram SDK not found!");
-                return;
+            // Check if SDK script loaded
+            if (typeof window.Adsgram !== 'undefined') {
+                try {
+                    AdController = window.Adsgram.init({
+                        blockId: "24893", // Make sure this is your correct ID
+                        debug: false      // FALSE = Real Ads, TRUE = Test Ads
+                    });
+                    console.log("Adsgram initialized successfully.");
+                } catch (e) {
+                    console.error("Adsgram init crash:", e);
+                }
+            } else {
+                console.error("Adsgram SDK not loaded yet.");
             }
-
-            // INITIALIZATION CORRECTED:
-            // - debug: false = Real Ads (Production)
-            // - debug: true = Test Ads (Development)
-            AdController = window.Adsgram.init({ 
-                blockId: "24893", 
-                debug: false // Set to true if you want to test without real ads
-            });
-            console.log("Adsgram Initialized");
         }
 
-        // Initialize immediately when script runs
+        // Run initialization immediately
         initAdsgram();
 
-        // --- 4. Core Functions ---
         function updateDisplay() {
             totalBalanceEl.textContent = coins.toLocaleString();
             adsCountEl.textContent = adCount;
             localStorage.setItem('user_coins', coins);
             localStorage.setItem('ad_count', adCount);
+        }
+
+        async function watchAd() {
+            // Retry init if it failed the first time
+            if (!AdController) {
+                initAdsgram();
+            }
+
+            // If still no controller, show specific error
+            if (!AdController) {
+                showStatus("Ad service unavailable. Check internet.", "#fb7185");
+                return;
+            }
+
+            adBtn.disabled = true;
+            showStatus("Loading Ad...", "#22d3ee");
+
+            try {
+                const result = await AdController.show();
+                
+                if (result && result.done) {
+                    coins += 100;
+                    adCount += 1;
+                    showStatus("Success! +100 ETC", "#34d399");
+                    tg?.HapticFeedback?.notificationOccurred('success');
+                    updateDisplay();
+                } else {
+                    showStatus("Ad skipped or closed.", "#fbbf24");
+                }
+            } catch (error) {
+                console.error("Ad Error Details:", error);
+                // Provide clearer error message
+                let errorMsg = "No ads available right now.";
+                if (error.description) errorMsg = error.description;
+                
+                showStatus(errorMsg, "#fb7185");
+            } finally {
+                setTimeout(() => {
+                    adBtn.disabled = false;
+                    showStatus("", "");
+                }, 2500);
+            }
         }
 
         function showStatus(msg, color) {
@@ -192,56 +274,9 @@
             }
         }
 
-        async function watchAd() {
-            // Retry initialization if failed before
-            if (!AdController) {
-                initAdsgram();
-            }
-
-            // If still no controller, show error
-            if (!AdController) {
-                showStatus("Ad service unavailable. Try again later.", "#fb7185");
-                return;
-            }
-
-            adBtn.disabled = true;
-            showStatus("Loading Ad...", "#22d3ee");
-
-            try {
-                // AD DISPLAY LOGIC
-                // Adsgram show() returns a promise
-                const result = await AdController.show();
-
-                // 'done' is true if user watched the ad completely
-                if (result && result.done) {
-                    coins += 100;
-                    adCount += 1;
-                    showStatus("Success! +100 ETC", "#34d399");
-                    tg?.HapticFeedback?.notificationOccurred('success');
-                    updateDisplay();
-                } else {
-                    // User closed ad early or ad was skipped
-                    showStatus("Ad skipped or not completed.", "#fbbf24");
-                }
-            } catch (error) {
-                // Handle errors (no fill, network error)
-                console.error("Ad Error:", error);
-                // Error object usually has a description
-                const errorMsg = error?.description || "No ads available right now.";
-                showStatus(errorMsg, "#fb7185");
-            } finally {
-                // Re-enable button after a short delay
-                setTimeout(() => {
-                    adBtn.disabled = false;
-                    showStatus("", "");
-                }, 2000);
-            }
-        }
-
-        // --- 5. Event Listeners ---
+        // UI Listeners
         adBtn?.addEventListener('click', watchAd);
 
-        // Navigation Logic
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
@@ -252,7 +287,6 @@
             });
         });
 
-        // Initial UI Update
         updateDisplay();
     </script>
 </body>
