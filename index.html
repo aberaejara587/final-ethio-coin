@@ -1,20 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">  
-  <head>  
-    <meta charset="UTF-8" />  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-    <title>Ethio Coin Game</title>  
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethio Coin Reward</title>
+    <script src="https://adsgram.ai/sdk/v1/adsgames.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-    <!-- Adsgram SDK -->
-    <script src="https://adsgram.ai/sdk/v1/adsgames.js" defer></script>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .coin-icon {
+            font-size: 80px;
+            filter: drop-shadow(0 0 10px #ffd700);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        h2 { color: white; margin: 15px 0 5px; font-weight: 300; }
+        
+        #coin-count {
+            font-size: 45px;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .reward-info {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .ad-button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .ad-button:hover {
+            transform: scale(1.05);
+            background: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .ad-button:disabled {
+            background: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #000;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="coin-icon">🪙</div>
+    <h2 id="coin-count">0</h2>
+    <p class="reward-info">Ethio Coins Argatteetta</p>
     
-    <!-- Telegram WebApp -->
-    <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
-  </head>  
-  <body>  
-    <div id="root"></div>
-    
-    <!-- React entry -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>  
+    <button class="ad-button" id="adBtn" onclick="watchAd()">
+        <span class="loader" id="loader"></span>
+        <span id="btnText">📺 Beeksisa Ilaali (+100)</span>
+    </button>
+</div>
+
+<script>
+    let coins = 0;
+    const btn = document.getElementById('adBtn');
+    const loader = document.getElementById('loader');
+    const btnText = document.getElementById('btnText');
+    const coinDisplay = document.getElementById('coin-count');
+
+    // Adsgram Initialize - Block ID 24893
+    const AdController = window.Adsgram.init({ blockId: "24893" });
+
+    async function watchAd() {
+        // Button disable godhi loading agarsiisuuf
+        btn.disabled = true;
+        loader.style.display = "inline-block";
+        btnText.innerText = "Loading...";
+
+        try {
+            const result = await AdController.show();
+            
+            if (result.done) {
+                // Yoo milkaa'e coin dabali
+                coins += 100;
+                coinDisplay.innerText = coins;
+                alert("Baay'ee gaari! Badhaasa kee +100 Coins argatteetta.");
+            }
+        } catch (err) {
+            console.error(err);
+            if (err.error === 'not_found') {
+                alert("Beeksiisni amma hin jiru, daqiiqaa muraasa booda yaali.");
+            } else {
+                alert("Beeksisa ilaaltee hin xumurre!");
+            }
+        } finally {
+            // Button deebisii banu
+            btn.disabled = false;
+            loader.style.display = "none";
+            btnText.innerText = "📺 Beeksisa Ilaali (+100)";
+        }
+    }
+</script>
+
+</body>
 </html>
