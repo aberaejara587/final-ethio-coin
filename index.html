@@ -7,105 +7,161 @@
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: white; overflow: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .nav-item.active { color: #fbbf24; }
-        .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; }
+        :root {
+            --primary: #fbbf24;
+            --bg-dark: #050505;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: #ffffff; 
+            overflow: hidden;
+            background-image: radial-gradient(circle at top right, #1a1a00, transparent);
+        }
+        .glass-card { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 24px;
+        }
+        .nav-item { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #666; }
+        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
+        .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; animation: fadeIn 0.4s ease-out; }
         .page.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gold-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
+        .btn-gradient { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-weight: 800; }
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="fixed top-0 w-full glass z-50 p-4 flex justify-between items-center border-b border-white/10">
-        <div class="flex items-center gap-2">
-            <span class="text-2xl">🪙</span>
-            <span class="font-bold text-gray-400">Balance</span>
-        </div>
-        <div class="text-2xl font-black text-yellow-400" id="total-balance">0.00</div>
-    </div>
-
-    <div id="home" class="page active p-6 pt-24">
-        <div class="glass rounded-3xl p-8 text-center mt-4">
-            <h1 class="text-3xl font-extrabold mb-2">Baga Nagaan Dhufte!</h1>
-            <p class="text-gray-400 text-sm">Beeksisa ilaalaa maallaqa sassaabbadhu.</p>
-            <div class="mt-8 grid grid-cols-2 gap-4">
-                <div class="glass p-4 rounded-2xl">
-                    <p class="text-xs text-gray-500 uppercase">Ads Today</p>
-                    <p class="text-xl font-bold" id="ads-count">0</p>
-                </div>
-                <div class="glass p-4 rounded-2xl">
-                    <p class="text-xs text-gray-500 uppercase">Status</p>
-                    <p class="text-xl font-bold text-green-500">Active</p>
-                </div>
+    <div class="fixed top-0 w-full glass-card rounded-none border-t-0 border-x-0 z-50 p-5 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-yellow-500/20 p-2 rounded-xl">
+                <span class="text-xl">💰</span>
             </div>
-        </div>
-    </div>
-
-    <div id="watch" class="page p-6 pt-24">
-        <h2 class="text-xl font-bold mb-4">Video Rewards</h2>
-        <div class="glass rounded-3xl p-10 text-center border-t-4 border-yellow-500">
-            <div class="text-6xl mb-4">📺</div>
-            <h3 class="text-2xl font-bold mb-2">Watch & Earn</h3>
-            <p class="text-gray-400 mb-6 text-sm">Beeksisa tokkoof 100 Coins argatta.</p>
-            <button onclick="watchAd()" id="adBtn" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-2xl transition-all active:scale-95">
-                SHOW VIDEO AD
-            </button>
-            <p id="status-msg" class="mt-4 text-xs font-semibold h-4"></p>
-        </div>
-    </div>
-
-    <div id="invite" class="page p-6 pt-24">
-        <h2 class="text-xl font-bold mb-4">Referrals</h2>
-        <div class="glass rounded-3xl p-8 text-center">
-            <div class="text-5xl mb-4">🎁</div>
-            <p class="text-gray-300 mb-6">Hiriyaa kee affeeruun 500 Coins argadhu.</p>
-            <button onclick="copyInvite()" class="w-full border border-yellow-500/50 text-yellow-500 py-4 rounded-2xl font-bold mb-3">Copy Invite Link</button>
-            <button onclick="shareInvite()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Share on Telegram</button>
-        </div>
-    </div>
-
-    <div id="wallet" class="page p-6 pt-24">
-        <h2 class="text-xl font-bold mb-4">Withdrawal</h2>
-        <div class="glass rounded-3xl p-6 space-y-6">
             <div>
-                <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">TON Wallet Address</label>
-                <input type="text" placeholder="UQ... or Wallet ID" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 focus:outline-none focus:border-yellow-500">
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Wallet Balance</p>
+                <div class="flex items-center gap-1">
+                    <span class="text-2xl font-black text-white" id="total-balance">0.00</span>
+                    <span class="text-yellow-500 text-xs font-bold">COINS</span>
+                </div>
             </div>
-            <div class="p-4 bg-yellow-500/10 rounded-2xl border border-yellow-500/20">
-                <p class="text-xs text-yellow-500 font-bold uppercase">Minimum Withdrawal</p>
-                <p class="text-lg font-black">10,000 Coins ($10.00)</p>
-            </div>
-            <button onclick="alert('Kaffaltiin kan jalqabu yoo 10,000 geessaniidha!')" class="w-full bg-white text-black font-black py-4 rounded-2xl opacity-50">WITHDRAW NOW</button>
+        </div>
+        <div class="bg-white/5 h-10 w-10 rounded-full flex items-center justify-center border border-white/10">
+            <span class="text-lg">👤</span>
         </div>
     </div>
 
-    <nav class="fixed bottom-0 w-full glass border-t border-white/10 px-6 py-4 flex justify-between items-center z-50">
+    <div id="home" class="page active p-6 pt-28">
+        <div class="glass-card p-8 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl"></div>
+            <h1 class="text-3xl font-extrabold mb-2 tracking-tight">Baga Nagaan <br><span class="text-yellow-500">Dhufte!</span></h1>
+            <p class="text-gray-400 text-sm mb-8">Maallaqa sassaabbachuuf qophiidhaa?</p>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <p class="text-[10px] text-gray-500 uppercase mb-1">Ads Watched</p>
+                    <p class="text-2xl font-bold" id="ads-count">0</p>
+                </div>
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <p class="text-[10px] text-gray-500 uppercase mb-1">Bonus Rate</p>
+                    <p class="text-2xl font-bold text-green-400">1.2x</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 glass-card p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="text-2xl">🚀</div>
+                <div>
+                    <h4 class="font-bold text-sm">Daily Quest</h4>
+                    <p class="text-xs text-gray-500">Watch 10 ads for bonus</p>
+                </div>
+            </div>
+            <div class="text-yellow-500 font-bold text-sm">0/10</div>
+        </div>
+    </div>
+
+    <div id="watch" class="page p-6 pt-28">
+        <h2 class="text-2xl font-black mb-6">Video <span class="text-yellow-500">Rewards</span></h2>
+        <div class="glass-card p-10 text-center border-b-4 border-yellow-500 gold-glow">
+            <div class="w-24 h-24 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-5xl">💎</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Ad Reward</h3>
+            <p class="text-gray-400 mb-8 text-sm px-4">Watch a short video and get <span class="text-yellow-400 font-bold">100 Coins</span> instantly.</p>
+            <button onclick="watchAd()" id="adBtn" class="w-full btn-gradient py-5 rounded-2xl shadow-lg shadow-yellow-500/20 active:scale-95 transition-transform">
+                START VIDEO AD
+            </button>
+            <p id="status-msg" class="mt-4 text-sm font-medium h-5"></p>
+        </div>
+    </div>
+
+    <div id="invite" class="page p-6 pt-28">
+        <h2 class="text-2xl font-black mb-6">Referral <span class="text-yellow-500">Program</span></h2>
+        <div class="glass-card p-8 text-center">
+            <div class="text-6xl mb-6">🤝</div>
+            <p class="text-gray-300 mb-8 px-4 font-medium">Hiriyaa kee affeeri, tokkoon tokkoo isaanitiif <span class="text-yellow-500 font-bold">500 Coins</span> fudhu.</p>
+            <div class="space-y-3">
+                <button onclick="copyInvite()" class="w-full bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl font-bold border border-white/10 transition-all">Copy Invite Link</button>
+                <button onclick="shareInvite()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black transition-all">Share on Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="wallet" class="page p-6 pt-28">
+        <h2 class="text-2xl font-black mb-6">My <span class="text-yellow-500">Wallet</span></h2>
+        <div class="glass-card p-6 space-y-6">
+            <div class="space-y-2">
+                <label class="text-[10px] text-gray-400 uppercase font-black tracking-widest ml-1">TON Wallet Address</label>
+                <input type="text" placeholder="UQ... or Wallet ID" class="w-full bg-black/40 border border-white/10 rounded-2xl p-5 focus:outline-none focus:border-yellow-500 transition-colors text-sm">
+            </div>
+            <div class="p-5 bg-gradient-to-r from-yellow-500/20 to-transparent rounded-2xl border-l-4 border-yellow-500">
+                <p class="text-[10px] text-yellow-500 font-black uppercase mb-1">Minimum Payout</p>
+                <p class="text-xl font-black">10,000 Coins <span class="text-gray-500 text-sm font-normal">($10.00)</span></p>
+            </div>
+            <button onclick="alert('Kaffaltiin kan jalqabu yoo 10,000 geessaniidha!')" class="w-full bg-white/5 text-gray-500 font-black py-5 rounded-2xl border border-white/5 cursor-not-allowed">WITHDRAW NOW</button>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 w-full glass-card rounded-t-[35px] rounded-b-none border-b-0 border-x-0 px-8 py-5 flex justify-between items-center z-50">
         <button onclick="showPage('home', this)" class="nav-item active flex flex-col items-center gap-1">
             <span class="text-xl">🏠</span>
-            <span class="text-[10px] font-bold">Home</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-tighter">Home</span>
         </button>
         <button onclick="showPage('watch', this)" class="nav-item flex flex-col items-center gap-1">
             <span class="text-xl">📺</span>
-            <span class="text-[10px] font-bold">Ads</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-tighter">Ads</span>
         </button>
         <button onclick="showPage('invite', this)" class="nav-item flex flex-col items-center gap-1">
             <span class="text-xl">🎁</span>
-            <span class="text-[10px] font-bold">Invite</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-tighter">Invite</span>
         </button>
         <button onclick="showPage('wallet', this)" class="nav-item flex flex-col items-center gap-1">
             <span class="text-xl">👛</span>
-            <span class="text-[10px] font-bold">Wallet</span>
+            <span class="text-[10px] font-extrabold uppercase tracking-tighter">Wallet</span>
         </button>
     </nav>
 
     <script>
         const tg = window.Telegram?.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
+        if (tg) { 
+            tg.ready(); 
+            tg.expand(); 
+            tg.setHeaderColor('#050505');
+            tg.setBackgroundColor('#050505');
+        }
 
-        // LocalStorage fayyadamnee balance kuusuu
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
 
@@ -116,25 +172,24 @@
             localStorage.setItem('ad_count', adCount);
         }
 
-        updateDisplay(); // Page yeroo reload ta'u deebisee fida
+        updateDisplay();
 
-        // Page Switching Logic
         function showPage(pageId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             element.classList.add('active');
-            if (tg) tg.HapticFeedback.impactOccurred('light');
+            if (tg) tg.HapticFeedback.impactOccurred('medium');
         }
 
-        // Adsgram Logic
         const AdController = window.Adsgram.init({ blockId: "24893", debug: false });
 
         async function watchAd() {
             const btn = document.getElementById('adBtn');
             const statusMsg = document.getElementById('status-msg');
-            btn.disabled = true;
-            statusMsg.innerText = "Loading ad...";
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            statusMsg.innerText = "Beeksisa fidaa jira...";
+            statusMsg.style.color = "#fbbf24";
 
             try {
                 const result = await AdController.show();
@@ -142,20 +197,24 @@
                     coins += 100;
                     adCount += 1;
                     updateDisplay();
-                    statusMsg.style.color = "#22c55e";
-                    statusMsg.innerText = "Baga gammadde! +100 Coins";
+                    statusMsg.style.color = "#4ade80";
+                    statusMsg.innerText = "Milkaa'eera! +100 Coins";
                     if (tg) tg.HapticFeedback.notificationOccurred('success');
                 }
             } catch (e) {
-                statusMsg.style.color = "#ef4444";
-                statusMsg.innerText = "Ads not available right now.";
+                statusMsg.style.color = "#f87171";
+                statusMsg.innerText = "Beeksisi yeroof hin jiru.";
             } finally {
-                setTimeout(() => { btn.disabled = false; statusMsg.innerText = ""; }, 3000);
+                setTimeout(() => { 
+                    btn.classList.remove('opacity-50', 'pointer-events-none'); 
+                    statusMsg.innerText = ""; 
+                }, 3000);
             }
         }
 
         function copyInvite() {
-            alert("Invite link copied!");
+            navigator.clipboard.writeText("https://t.me/Ethio_Coin1_bot");
+            alert("Linkiin affeerraa garagalfameera!");
         }
 
         function shareInvite() {
