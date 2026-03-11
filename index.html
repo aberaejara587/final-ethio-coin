@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ethio Coin Reward</title>
-    
-    <script src="https://adsgram.ai/sdk/v1/adsgames.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
+        /* Stylen kee bareedaa dha, hin jijjiirini */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
@@ -27,18 +27,11 @@
             border-radius: 30px;
             text-align: center;
             width: 340px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-        .coin-icon {
-            font-size: 70px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px #ffd700);
         }
         #coin-count {
             font-size: 55px;
             font-weight: 800;
             color: #ffd700;
-            margin: 10px 0;
         }
         .ad-button {
             background: #ffd700;
@@ -46,39 +39,28 @@
             border: none;
             padding: 18px;
             border-radius: 15px;
-            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            transition: 0.3s;
             margin-top: 20px;
         }
-        .ad-button:active { transform: scale(0.95); }
-        .ad-button:disabled { background: #555; cursor: not-allowed; }
-        
-        #status-msg {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #ff4757;
-            min-height: 20px;
-        }
+        #status-msg { margin-top: 15px; font-size: 13px; min-height: 20px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="coin-icon">🪙</div>
+    <div style="font-size: 70px;">🪙</div>
     <h2 id="coin-count">0</h2>
     <p style="opacity: 0.7;">Ethio Coins</p>
     
     <button class="ad-button" id="adBtn" onclick="watchAd()">
-        📺 BE EKSISA ILAALI
+        📺 BEEKSISA ILAALI
     </button>
     <div id="status-msg"></div>
 </div>
 
 <script>
-    // Telegram expand
     const tg = window.Telegram?.WebApp;
     if (tg) {
         tg.ready();
@@ -90,50 +72,49 @@
     const coinDisplay = document.getElementById('coin-count');
     const statusMsg = document.getElementById('status-msg');
 
-    // Adsgram Initialize - Block ID KEETIIN
+    // Adsgram Initialize
+    // BLOCK ID KEE "24893" TA'UU MIRKANEEFFADHU
     const AdController = window.Adsgram.init({ 
         blockId: "24893", 
-        debug: false // Beeksisa dhugaa fiduuf false ta'uu qaba
+        debug: false 
     });
 
     async function watchAd() {
+        statusMsg.style.color = "white";
         statusMsg.innerText = "Beeksisa barbaadaa jira...";
         btn.disabled = true;
 
         try {
-            // Beeksisa agarsiisuu
             const result = await AdController.show();
             
-            // Yoo milkaa'e (result.done == true)
             if (result && result.done) {
                 coins += 100;
                 coinDisplay.innerText = coins;
                 statusMsg.style.color = "#2ed573";
                 statusMsg.innerText = "Milkaa'inaan xumurame! +100";
-                if (tg) tg.HapticFeedback.notificationOccurred('success');
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             }
         } catch (err) {
-            console.error(err);
+            console.error("Adsgram Error:", err);
             statusMsg.style.color = "#ff4757";
             
-            // Error adda addaa kantirolii gochuuf
-            if (err.error === 'not_found' || err.error === 'no_fill') {
-                statusMsg.innerText = "Beeksiisni amma hin jiru, daqiiqaa muraasa booda yaali.";
+            // Error handling
+            if (err.error === 'no_fill') {
+                statusMsg.innerText = "Beeksiisni amma hin jiru (No Fill).";
             } else if (err.error === 'closed') {
                 statusMsg.innerText = "Beeksisa osoo hin xumurin cufte!";
             } else {
-                statusMsg.innerText = "Rakkoon uumame, deebisii yaali.";
+                statusMsg.innerText = "Rakkoon uumame: " + (err.error || "Unknown");
             }
         } finally {
             setTimeout(() => {
                 btn.disabled = false;
-                if(statusMsg.innerText !== "Milkaa'inaan xumurame! +100") {
+                if (statusMsg.innerText !== "Milkaa'inaan xumurame! +100") {
                     statusMsg.innerText = "";
                 }
             }, 3000);
         }
     }
 </script>
-
 </body>
 </html>
