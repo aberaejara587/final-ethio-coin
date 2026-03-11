@@ -9,8 +9,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -24,6 +22,7 @@
             background: var(--bg-void);
             color: white;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .glass-premium {
             background: var(--glass-bg);
@@ -39,88 +38,126 @@
             padding: 1.25rem;
             border-radius: 1rem;
             transition: all 0.2s;
+            box-shadow: 0 8px 20px rgba(229, 177, 46, 0.2);
         }
         .btn-primary:active { transform: scale(0.96); }
-        .page { display: none; padding: 100px 20px; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .page { display: none; padding: 100px 20px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
         
-        /* Bottom Nav */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .nav-glass {
-            background: rgba(8, 12, 20, 0.9);
+            background: rgba(8, 12, 20, 0.95);
             backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255,255,255,0.05);
         }
-        .nav-item { color: #64748b; text-align: center; flex: 1; }
+        .nav-item { color: #64748b; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent-gold); }
     </style>
 </head>
-<body>
+<body class="bg-[#05080d]">
 
     <header class="fixed top-0 w-full z-50 p-5 bg-black/40 backdrop-blur-md border-b border-white/5">
         <div class="max-w-lg mx-auto flex justify-between items-center">
-            <h1 class="font-bold text-xl">Ethio Coin</h1>
-            <div class="flex items-baseline gap-1">
-                <span id="total-balance" class="text-2xl font-bold text-amber-400">0</span>
-                <span class="text-xs font-bold">ETC</span>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">E</div>
+                <span class="font-bold tracking-tight">Ethio Coin</span>
+            </div>
+            <div class="flex items-baseline gap-1 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <span id="total-balance" class="text-xl font-bold text-amber-400">0</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">ETC</span>
             </div>
         </div>
     </header>
 
-    <main>
+    <main class="pb-32">
         <section id="page-home" class="page active">
             <div class="max-w-lg mx-auto glass-premium p-8 text-center">
-                <h2 class="text-2xl font-bold mb-2">Baga Nagaan Dhufte!</h2>
-                <p class="text-slate-400">Maallaqa sassaabbachuuf "Ads" banni.</p>
+                <h2 class="text-2xl font-bold mb-3 font-display">Baga Nagaan Dhufte!</h2>
+                <p class="text-slate-400 text-sm">Beeksisa ilaaluun ETC sassaabbadhu.</p>
             </div>
         </section>
 
         <section id="page-watch" class="page">
-            <div class="max-w-lg mx-auto glass-premium p-8 text-center">
-                <div class="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
+            <div class="max-w-lg mx-auto glass-premium p-10 text-center relative overflow-hidden">
+                <div class="w-24 h-24 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-amber-500/20">
+                    <svg class="w-12 h-12 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                    </svg>
                 </div>
-                <h3 class="text-xl font-bold mb-2 text-white">Beeksisa Ilaali</h3>
-                <p class="text-slate-400 mb-8 text-sm">Beeksisa tokkoof 100 ETC argadhu</p>
                 
-                <button id="adBtn" class="btn-primary w-full">BEEKSISA JALQABI</button>
-                <p id="status-msg" class="mt-4 text-sm font-semibold h-5"></p>
+                <h3 class="text-2xl font-bold mb-2">Beeksisa Ilaali</h3>
+                <p class="text-slate-400 mb-10 text-sm">Beeksisa tokkoof <span class="text-amber-400 font-bold">100 ETC</span> argadhu</p>
+                
+                <button id="adBtn" class="btn-primary w-full uppercase tracking-widest text-sm">
+                    Beeksisa Jalqabi
+                </button>
+                
+                <p id="status-msg" class="mt-6 text-sm font-semibold min-h-[1.25rem] transition-all"></p>
+            </div>
+        </section>
+
+        <section id="page-wallet" class="page">
+            <div class="max-w-lg mx-auto glass-premium p-8 text-center">
+                <h3 class="text-xl font-bold mb-4">Wallet Kee</h3>
+                <p class="text-slate-500 text-sm italic">Withdrawals soon...</p>
             </div>
         </section>
     </main>
 
-    <nav class="nav-glass fixed bottom-0 w-full py-4 px-2 flex justify-around">
-        <button onclick="showPage('home')" class="nav-item active" id="nav-home">Home</button>
-        <button onclick="showPage('watch')" class="nav-item" id="nav-watch">Ads</button>
-        <button class="nav-item opacity-50">Wallet</button>
+    <nav class="nav-glass fixed bottom-0 w-full py-4 px-4 flex justify-around z-50">
+        <button onclick="showPage('home')" class="nav-item active" id="nav-home">
+            <span class="block text-lg mb-1">🏠</span> HOME
+        </button>
+        <button onclick="showPage('watch')" class="nav-item" id="nav-watch">
+            <span class="block text-lg mb-1">🎬</span> ADS
+        </button>
+        <button onclick="showPage('wallet')" class="nav-item" id="nav-wallet">
+            <span class="block text-lg mb-1">💰</span> WALLET
+        </button>
     </nav>
 
     <script>
+        // Telegram WebApp Initialize
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let AdController = null;
 
-        // Balance Update Godhuuf
         function updateBalance() {
             document.getElementById('total-balance').innerText = coins.toLocaleString();
             localStorage.setItem('user_coins', coins);
         }
 
-        // Adsgram Init - Dhugaa (Real) gochuuf debug: false godhi
+        // Adsgram Initialize
         function initAdsgram() {
             if (window.Adsgram) {
                 AdController = window.Adsgram.init({
-                    blockId: "24893", 
-                    debug: false // ASITTI: Beeksisa dhugaa fiduuf 'false' ta'uu qaba
+                    blockId: "24893", // ASITTI: ID kee isa sirrii galchi
+                    debug: false      // Beeksisa dhugaa fiduuf 'false' ta'uu qaba
                 });
             }
         }
 
-        // Beeksisa Agarsiisuuf
         async function runAd() {
             const btn = document.getElementById('adBtn');
             const status = document.getElementById('status-msg');
 
-            if (!AdController) initAdsgram();
-            if (!AdController) return;
+            if (!AdController) {
+                initAdsgram();
+            }
+
+            if (!AdController) {
+                status.innerText = "Error: Ad system not ready!";
+                status.style.color = "#fb7185";
+                return;
+            }
 
             btn.disabled = true;
             status.innerText = "Beeksisa fidaa jira...";
@@ -131,21 +168,23 @@
                 if (result.done) {
                     coins += 100;
                     updateBalance();
-                    status.innerText = "Gariidha! +100 ETC";
+                    status.innerText = "Gariidha! +100 ETC argatteetta.";
                     status.style.color = "#34d399";
+                    tg.HapticFeedback.notificationOccurred('success');
                 }
             } catch (err) {
-                status.innerText = "Beeksisi dhabameera, deebii yaali.";
+                console.error(err);
+                status.innerText = "Beeksisi dhabameera, lammata yaali.";
                 status.style.color = "#fb7185";
+                tg.HapticFeedback.notificationOccurred('error');
             } finally {
                 setTimeout(() => {
                     btn.disabled = false;
                     status.innerText = "";
-                }, 3000);
+                }, 4000);
             }
         }
 
-        // Page Switcher
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -153,7 +192,9 @@
             document.getElementById('nav-' + pageId).classList.add('active');
         }
 
+        // Event Listeners
         document.getElementById('adBtn').onclick = runAd;
+
         window.onload = () => {
             updateBalance();
             initAdsgram();
