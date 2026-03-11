@@ -72,8 +72,7 @@
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
-        .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; }
-        .input-premium { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 1.125rem; color: white; }
+        .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; margin-top: 1rem; }
     </style>
 </head>
 <body class="no-scrollbar">
@@ -101,7 +100,7 @@
         <section id="page-home" class="page active pt-24 px-5">
             <div class="max-w-lg mx-auto space-y-5">
                 <div class="glass-premium p-6">
-                    <h1 class="text-xl font-bold font-display">Baga Nagaan Dhufte</h1>
+                    <h1 class="text-xl font-bold font-display">Ethio Coin PRO</h1>
                     <p class="text-sm text-slate-400 mb-6">Sassaabbachuuf qophiidhaa?</p>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-white/5 p-4 rounded-xl">
@@ -126,58 +125,42 @@
                     <h3 class="text-xl font-bold mb-2">Beeksisa Ilaali</h3>
                     <p class="text-slate-400 mb-6 text-sm">Beeksisa tokkoon <span class="text-amber-400 font-bold">100 ETC</span> argadhu</p>
                     <button id="adBtn" class="btn-primary w-full">Beeksisa Jalqabi</button>
-                    <p id="status-msg" class="status-message mt-4 text-sm"></p>
+                    <p id="status-msg" class="status-message text-sm"></p>
                 </div>
             </div>
         </section>
 
         <section id="page-wallet" class="page pt-24 px-5">
-             <div class="max-w-lg mx-auto glass-premium p-6">
-                <h3 class="text-xl font-bold mb-4">ETC Baafadhu</h3>
-                <input type="text" placeholder="Wallet Address" class="input-premium mb-4">
-                <button class="bg-slate-800 text-slate-500 w-full py-4 rounded-xl font-bold cursor-not-allowed">Min 10,000 ETC</button>
+             <div class="max-w-lg mx-auto glass-premium p-6 text-center">
+                <h3 class="text-xl font-bold mb-4">Wallet</h3>
+                <p class="text-slate-400 text-sm">Withdrawal system is coming soon.</p>
              </div>
         </section>
     </main>
 
     <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
         <div class="max-w-lg mx-auto flex justify-around">
-            <button class="nav-item active flex flex-col items-center p-2 rounded-xl" data-page="home">
-                <span class="text-[10px] font-bold">HOME</span>
-            </button>
-            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="watch">
-                <span class="text-[10px] font-bold">ADS</span>
-            </button>
-            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="wallet">
-                <span class="text-[10px] font-bold">WALLET</span>
-            </button>
+            <button class="nav-item active flex flex-col items-center p-2 rounded-xl" data-page="home"><span class="text-[10px] font-bold">HOME</span></button>
+            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="watch"><span class="text-[10px] font-bold">ADS</span></button>
+            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="wallet"><span class="text-[10px] font-bold">WALLET</span></button>
         </div>
     </nav>
 
     <script>
-        // State
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
-        const tg = window.Telegram?.WebApp;
         let AdController = null;
+        const tg = window.Telegram?.WebApp;
 
         if (tg) { tg.ready(); tg.expand(); }
 
-        // --- ADGRAM INITIALIZATION WITH RETRY ---
+        // Mirkaneessaaf: debug: true godheera
         function initAdsgram() {
             if (window.Adsgram) {
-                try {
-                    AdController = window.Adsgram.init({
-                        blockId: "24893", 
-                        debug: false      // REAL ADS
-                    });
-                    console.log("Adsgram Initialized Successfully.");
-                } catch (e) {
-                    console.error("Adsgram init error:", e);
-                }
-            } else {
-                console.warn("Adsgram SDK not loaded. Retrying in 1s...");
-                setTimeout(initAdsgram, 1000);
+                AdController = window.Adsgram.init({
+                    blockId: "24893", 
+                    debug: true // TEST MODE: Mirkaneessaaf qofa. Erga siif hojjete booda 'false' godhi.
+                });
             }
         }
 
@@ -189,13 +172,12 @@
         }
 
         async function watchAd() {
-            const btn = document.getElementById('adBtn');
             const statusEl = document.getElementById('status-msg');
+            const btn = document.getElementById('adBtn');
 
-            // Final check if ready
             if (!AdController) {
                 initAdsgram();
-                statusEl.textContent = "Sirni beeksisaa hin qophoofne. Deebii yaali.";
+                statusEl.textContent = "Beeksisi hin qophoofne, deebii yaali.";
                 statusEl.style.color = "#fb7185";
                 return;
             }
@@ -206,31 +188,27 @@
 
             try {
                 const result = await AdController.show();
-                if (result && result.done) {
+                if (result.done) {
                     coins += 100;
                     adCount += 1;
                     statusEl.textContent = "Success! +100 ETC";
                     statusEl.style.color = "#34d399";
-                    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                     updateDisplay();
                 } else {
-                    statusEl.textContent = "Beeksisa addaan kutteetta!";
+                    statusEl.textContent = "Beeksisa addaan kutteetta.";
                     statusEl.style.color = "#fbbf24";
                 }
-            } catch (error) {
-                // If it fails here, it's usually because Adsgram doesn't have an ad to show
-                statusEl.textContent = "Yeroof beeksisi hin jiru. Deebii yaali.";
+            } catch (err) {
+                statusEl.textContent = "Hammaaf beeksisi hin jiru.";
                 statusEl.style.color = "#fb7185";
-                console.error("Ad Error:", error);
             } finally {
-                setTimeout(() => {
+                setTimeout(() => { 
                     btn.disabled = false;
                     statusEl.textContent = "";
-                }, 4000);
+                }, 3000);
             }
         }
 
-        // Event Listeners
         document.getElementById('adBtn').addEventListener('click', watchAd);
 
         document.querySelectorAll('.nav-item').forEach(btn => {
@@ -243,7 +221,6 @@
             });
         });
 
-        // Initialize on load
         window.onload = () => {
             initAdsgram();
             updateDisplay();
