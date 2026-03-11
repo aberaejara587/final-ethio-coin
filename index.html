@@ -7,6 +7,7 @@
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -75,15 +76,14 @@
             transition: all 0.2s;
             box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
         }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
 
         .btn-secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; padding: 1rem; }
         .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
         .accent-line { width: 4px; height: 100%; position: absolute; left: 0; top: 0; }
         .accent-gold { background: var(--accent-gold); }
         .accent-teal { background: var(--accent-teal); }
-        .accent-rose { background: var(--accent-rose); }
-        .accent-emerald { background: var(--accent-emerald); }
-
+        
         .progress-ring-fill { stroke: var(--accent-teal); transition: stroke-dashoffset 0.5s ease; }
         .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; }
         .input-premium { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 1.125rem; color: white; }
@@ -210,9 +210,15 @@
             tg.expand();
         }
 
-        // Adsgram Init (REAL ADS)
-        // BlockId kee "24893" itti fayyadamteera
-        const AdController = window.Adsgram?.init({ blockId: "24893", debug: false });
+        // Adsgram Initialization with Error Fallback
+        let AdController = null;
+        try {
+            if (window.Adsgram) {
+                AdController = window.Adsgram.init({ blockId: "24893", debug: false });
+            }
+        } catch (e) {
+            console.error("Adsgram init error:", e);
+        }
 
         // UI Elements
         const totalBalanceEl = document.getElementById('total-balance');
@@ -226,25 +232,29 @@
             totalBalanceEl.textContent = coins.toLocaleString();
             adsCountEl.textContent = adCount;
             
-            // Quest logic (10 ads goal)
             const goal = 10;
             const progress = Math.min(adCount, goal);
             const offset = 100 - (progress / goal * 100);
-            questProgressEl.style.strokeDashoffset = offset;
-            questCountEl.textContent = `${progress}/${goal}`;
+            if (questProgressEl) questProgressEl.style.strokeDashoffset = offset;
+            if (questCountEl) questCountEl.textContent = `${progress}/${goal}`;
 
             localStorage.setItem('user_coins', coins);
             localStorage.setItem('ad_count', adCount);
         }
 
         async function watchAd() {
+            // Re-check Controller if it was null
+            if (!AdController && window.Adsgram) {
+                AdController = window.Adsgram.init({ blockId: "24893", debug: false });
+            }
+
             if (!AdController) {
-                showStatus("Ad service error", "#fb7185");
+                showStatus("Ad service not ready. Refresh!", "#fb7185");
                 return;
             }
 
             adBtn.disabled = true;
-            showStatus("Loading Real Ad...", "#22d3ee");
+            showStatus("Loading Ad...", "#22d3ee");
 
             try {
                 const result = await AdController.show();
@@ -255,11 +265,12 @@
                     tg?.HapticFeedback?.notificationOccurred('success');
                     updateDisplay();
                 } else {
-                    showStatus("Ad dismissed", "#fb7185");
+                    showStatus("Ad closed early", "#fb7185");
                 }
             } catch (e) {
-                showStatus("No ads available", "#fb7185");
-                console.error(e);
+                console.error("Adsgram Error:", e);
+                // Handle specific error codes if needed
+                showStatus("No ads available. Try again later.", "#fb7185");
             } finally {
                 setTimeout(() => {
                     adBtn.disabled = false;
@@ -275,25 +286,28 @@
             }
         }
 
-        // Navigation
+        // Navigation Logic
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(`page-${page}`).classList.add('active');
+                const targetPage = document.getElementById(`page-${page}`);
+                if (targetPage) targetPage.classList.add('active');
+                
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btn.classList.add('active');
                 tg?.HapticFeedback?.impactOccurred('light');
             });
         });
 
-        // Event Listeners
         adBtn?.addEventListener('click', watchAd);
         
         document.getElementById('copy-btn')?.addEventListener('click', () => {
-            navigator.clipboard.writeText("https://t.me/Ethio_Coin1_bot");
-            tg?.HapticFeedback?.notificationOccurred('success');
-            alert("Referral link copied!");
+            const link = "https://t.me/Ethio_Coin1_bot";
+            navigator.clipboard.writeText(link).then(() => {
+                tg?.HapticFeedback?.notificationOccurred('success');
+                alert("Referral link copied!");
+            });
         });
 
         document.getElementById('share-btn')?.addEventListener('click', () => {
@@ -301,39 +315,44 @@
             tg ? tg.openTelegramLink(url) : window.open(url, '_blank');
         });
 
-        // Particles
+        // Background Particles
         const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        
-        function initParticles() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            for(let i=0; i<30; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random()-0.5)*0.5,
-                    vy: (Math.random()-0.5)*0.5,
-                    r: Math.random() * 2
-                });
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            function initParticles() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                particles = [];
+                for(let i=0; i<30; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random()-0.5)*0.5,
+                        vy: (Math.random()-0.5)*0.5,
+                        r: Math.random() * 2
+                    });
+                }
             }
+
+            function drawParticles() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(229, 177, 46, 0.2)";
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x<0) p.x=canvas.width; if(p.x>canvas.width) p.x=0;
+                    if(p.y<0) p.y=canvas.height; if(p.y>canvas.height) p.y=0;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+                });
+                requestAnimationFrame(drawParticles);
+            }
+
+            window.addEventListener('resize', initParticles);
+            initParticles();
+            drawParticles();
         }
 
-        function drawParticles() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(229, 177, 46, 0.2)";
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x<0) p.x=canvas.width; if(p.x>canvas.width) p.x=0;
-                if(p.y<0) p.y=canvas.height; if(p.y>canvas.height) p.y=0;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(drawParticles);
-        }
-
-        initParticles();
-        drawParticles();
         updateDisplay();
     </script>
 </body>
