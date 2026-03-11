@@ -5,226 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ethio Coin · PRO</title>
     
-    <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
+    <script src="https://adsgram.ai/js/adsgram-ad-sdk.js" defer></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-void: #05080d;
-            --bg-surface: #0a0f18;
-            --bg-elevated: #111927;
             --glass-bg: rgba(14, 22, 35, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
             --accent-gold: #e5b12e;
-            --accent-teal: #22d3ee;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--bg-void);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-        .bg-gradient-layer { background: radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%); }
-        .bg-grid-layer { background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 70%); }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .font-display { font-family: 'Syne', sans-serif; }
-
-        .glass-premium {
-            background: var(--glass-bg);
-            backdrop-filter: blur(24px) saturate(1.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-glass { background: rgba(8, 12, 20, 0.85); backdrop-filter: blur(32px); border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .top-bar-glass { background: rgba(8, 12, 20, 0.75); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-
-        .page { display: none; min-height: 100vh; padding-bottom: 140px; position: relative; z-index: 10; }
-        .page.active { display: block; animation: pageReveal 0.5s ease-out; }
-
-        @keyframes pageReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a41a 100%);
-            color: #0a0f18;
-            font-weight: 700;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            transition: all 0.2s;
-            box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
-        }
-        .btn-primary:active { transform: scale(0.96); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
-        .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; margin-top: 1rem; }
+        body { font-family: sans-serif; background: var(--bg-void); color: white; min-height: 100vh; }
+        .glass-premium { background: var(--glass-bg); backdrop-filter: blur(20px); border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); }
+        .btn-primary { background: var(--accent-gold); color: black; font-weight: bold; padding: 1rem; border-radius: 1rem; width: 100%; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.95); }
+        .page { display: none; padding: 80px 20px; }
+        .active { display: block; }
+        .status-msg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 14px; }
     </style>
 </head>
-<body class="no-scrollbar">
-    <div class="bg-layer bg-gradient-layer"></div>
-    <div class="bg-layer bg-grid-layer"></div>
+<body>
 
-    <header class="top-bar-glass fixed top-0 w-full z-50 px-5 py-4">
-        <div class="max-w-lg mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
-                    <span class="text-amber-400 font-bold">E</span>
-                </div>
-                <div>
-                    <p class="text-[0.6rem] text-slate-500 uppercase font-bold">Total Balance</p>
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-xl font-bold font-display" id="total-balance">0</span>
-                        <span class="text-[10px] text-amber-400">ETC</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <header class="fixed top-0 w-full p-5 flex justify-between items-center z-50 bg-black/50">
+        <div class="font-bold text-xl">Ethio Coin <span id="total-balance" class="text-amber-400">0</span> <small class="text-xs">ETC</small></div>
     </header>
 
-    <main class="relative z-10">
-        <section id="page-home" class="page active pt-24 px-5">
-            <div class="max-w-lg mx-auto space-y-5">
-                <div class="glass-premium p-6">
-                    <h1 class="text-xl font-bold font-display">Ethio Coin PRO</h1>
-                    <p class="text-sm text-slate-400 mb-6">Sassaabbachuuf qophiidhaa?</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <p class="text-[10px] text-slate-500 uppercase">Ads Watched</p>
-                            <p class="text-xl font-bold text-teal-400" id="ads-count">0</p>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <p class="text-[10px] text-slate-500 uppercase">Multiplier</p>
-                            <p class="text-xl font-bold text-emerald-400">1.2x</p>
-                        </div>
-                    </div>
-                </div>
+    <main>
+        <section id="page-watch" class="page active">
+            <div class="glass-premium p-10 text-center">
+                <div class="text-5xl mb-5">📺</div>
+                <h3 class="text-xl font-bold mb-2">Beeksisa Ilaali</h3>
+                <p class="text-gray-400 mb-8">Beeksisa tokkoon 100 ETC argadhu</p>
+                
+                <button id="adBtn" class="btn-primary">ADS JALQABI</button>
+                <div id="status-msg" class="status-msg"></div>
             </div>
-        </section>
-
-        <section id="page-watch" class="page pt-24 px-5">
-            <div class="max-w-lg mx-auto">
-                <div class="glass-premium p-8 text-center">
-                    <div class="w-20 h-20 bg-teal-500/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-10 h-10 text-teal-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Beeksisa Ilaali</h3>
-                    <p class="text-slate-400 mb-6 text-sm">Beeksisa tokkoon <span class="text-amber-400 font-bold">100 ETC</span> argadhu</p>
-                    <button id="adBtn" class="btn-primary w-full">Beeksisa Jalqabi</button>
-                    <p id="status-msg" class="status-message text-sm"></p>
-                </div>
-            </div>
-        </section>
-
-        <section id="page-wallet" class="page pt-24 px-5">
-             <div class="max-w-lg mx-auto glass-premium p-6 text-center">
-                <h3 class="text-xl font-bold mb-4">Wallet</h3>
-                <p class="text-slate-400 text-sm">Withdrawal system is coming soon.</p>
-             </div>
         </section>
     </main>
 
-    <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
-        <div class="max-w-lg mx-auto flex justify-around">
-            <button class="nav-item active flex flex-col items-center p-2 rounded-xl" data-page="home"><span class="text-[10px] font-bold">HOME</span></button>
-            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="watch"><span class="text-[10px] font-bold">ADS</span></button>
-            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="wallet"><span class="text-[10px] font-bold">WALLET</span></button>
-        </div>
-    </nav>
-
     <script>
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
-        let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
         let AdController = null;
-        const tg = window.Telegram?.WebApp;
 
-        if (tg) { tg.ready(); tg.expand(); }
-
-        // Mirkaneessaaf: debug: true godheera
-        function initAdsgram() {
+        // 1. SDK akka fe'ame mirkaneessuuf
+        function setupAds() {
             if (window.Adsgram) {
                 AdController = window.Adsgram.init({
                     blockId: "24893", 
-                    debug: true // TEST MODE: Mirkaneessaaf qofa. Erga siif hojjete booda 'false' godhi.
+                    debug: true // Jalqaba irratti Test Ad akka dhufuuf TRUE dha. Sana booda FALSE godhuu dandeessa.
                 });
+                console.log("Adsgram Ready!");
+            } else {
+                console.log("Waiting for SDK...");
+                setTimeout(setupAds, 1000); // Yoo fe'amee hin xumurre yeroo 1s booda irra deebi'a
             }
         }
 
-        function updateDisplay() {
-            document.getElementById('total-balance').textContent = coins.toLocaleString();
-            document.getElementById('ads-count').textContent = adCount;
-            localStorage.setItem('user_coins', coins);
-            localStorage.setItem('ad_count', adCount);
-        }
-
-        async function watchAd() {
-            const statusEl = document.getElementById('status-msg');
+        async function showAd() {
+            const status = document.getElementById('status-msg');
             const btn = document.getElementById('adBtn');
 
             if (!AdController) {
-                initAdsgram();
-                statusEl.textContent = "Beeksisi hin qophoofne, deebii yaali.";
-                statusEl.style.color = "#fb7185";
+                status.innerText = "Beeksisi hin qophoofne, daqiiqaa tokko eegi...";
+                status.style.color = "red";
+                setupAds();
                 return;
             }
 
             btn.disabled = true;
-            statusEl.textContent = "Beeksisa fidaa jira...";
-            statusEl.style.color = "#22d3ee";
+            status.innerText = "Beeksisa fidaa jira...";
+            status.style.color = "#22d3ee";
 
             try {
                 const result = await AdController.show();
                 if (result.done) {
                     coins += 100;
-                    adCount += 1;
-                    statusEl.textContent = "Success! +100 ETC";
-                    statusEl.style.color = "#34d399";
-                    updateDisplay();
-                } else {
-                    statusEl.textContent = "Beeksisa addaan kutteetta.";
-                    statusEl.style.color = "#fbbf24";
+                    document.getElementById('total-balance').innerText = coins.toLocaleString();
+                    localStorage.setItem('user_coins', coins);
+                    status.innerText = "Gariidha! +100 ETC";
+                    status.style.color = "#34d399";
                 }
-            } catch (err) {
-                statusEl.textContent = "Hammaaf beeksisi hin jiru.";
-                statusEl.style.color = "#fb7185";
+            } catch (e) {
+                status.innerText = "Hammaaf beeksisi dhabameera.";
+                status.style.color = "red";
             } finally {
-                setTimeout(() => { 
+                setTimeout(() => {
                     btn.disabled = false;
-                    statusEl.textContent = "";
+                    status.innerText = "";
                 }, 3000);
             }
         }
 
-        document.getElementById('adBtn').addEventListener('click', watchAd);
-
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const page = btn.getAttribute('data-page');
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(`page-${page}`).classList.add('active');
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-
-        window.onload = () => {
-            initAdsgram();
-            updateDisplay();
-        };
+        document.getElementById('adBtn').onclick = showAd;
+        document.getElementById('total-balance').innerText = coins.toLocaleString();
+        
+        // SDK jalqaba irratti waami
+        setupAds();
     </script>
 </body>
 </html>
