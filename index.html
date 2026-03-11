@@ -68,7 +68,7 @@
             transition: all 0.2s;
             box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
         }
-        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:active { transform: scale(0.96); }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
@@ -155,29 +155,32 @@
     </nav>
 
     <script>
-        // State Management
+        // State
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
         const tg = window.Telegram?.WebApp;
         let AdController = null;
 
-        // Telegram WebApp Setup
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
+        if (tg) { tg.ready(); tg.expand(); }
 
-        // Initialize Adsgram (Real Ads)
+        // --- ADGRAM INITIALIZATION WITH RETRY ---
         function initAdsgram() {
-            if (typeof window.Adsgram !== 'undefined') {
-                AdController = window.Adsgram.init({
-                    blockId: "24893", // ID kee kallaattiin Adsgram irraa fuudhuu qabda
-                    debug: false      // REAL ADS FIDA (False godhi)
-                });
+            if (window.Adsgram) {
+                try {
+                    AdController = window.Adsgram.init({
+                        blockId: "24893", 
+                        debug: false      // REAL ADS
+                    });
+                    console.log("Adsgram Initialized Successfully.");
+                } catch (e) {
+                    console.error("Adsgram init error:", e);
+                }
+            } else {
+                console.warn("Adsgram SDK not loaded. Retrying in 1s...");
+                setTimeout(initAdsgram, 1000);
             }
         }
 
-        // Update UI
         function updateDisplay() {
             document.getElementById('total-balance').textContent = coins.toLocaleString();
             document.getElementById('ads-count').textContent = adCount;
@@ -185,44 +188,46 @@
             localStorage.setItem('ad_count', adCount);
         }
 
-        // Watch Ad Logic
         async function watchAd() {
-            if (!AdController) initAdsgram();
+            const btn = document.getElementById('adBtn');
+            const statusEl = document.getElementById('status-msg');
+
+            // Final check if ready
             if (!AdController) {
-                showStatus("Error: Ad system not ready!", "#fb7185");
+                initAdsgram();
+                statusEl.textContent = "Sirni beeksisaa hin qophoofne. Deebii yaali.";
+                statusEl.style.color = "#fb7185";
                 return;
             }
 
-            const btn = document.getElementById('adBtn');
             btn.disabled = true;
-            showStatus("Loading Ad...", "#22d3ee");
+            statusEl.textContent = "Beeksisa fidaa jira...";
+            statusEl.style.color = "#22d3ee";
 
             try {
                 const result = await AdController.show();
                 if (result && result.done) {
                     coins += 100;
                     adCount += 1;
-                    showStatus("Success! +100 ETC", "#34d399");
+                    statusEl.textContent = "Success! +100 ETC";
+                    statusEl.style.color = "#34d399";
                     if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                     updateDisplay();
                 } else {
-                    showStatus("Ad closed early.", "#fbbf24");
+                    statusEl.textContent = "Beeksisa addaan kutteetta!";
+                    statusEl.style.color = "#fbbf24";
                 }
             } catch (error) {
-                showStatus("No Ads Available Now.", "#fb7185");
-                console.error(error);
+                // If it fails here, it's usually because Adsgram doesn't have an ad to show
+                statusEl.textContent = "Yeroof beeksisi hin jiru. Deebii yaali.";
+                statusEl.style.color = "#fb7185";
+                console.error("Ad Error:", error);
             } finally {
                 setTimeout(() => {
                     btn.disabled = false;
-                    showStatus("", "");
-                }, 3000);
+                    statusEl.textContent = "";
+                }, 4000);
             }
-        }
-
-        function showStatus(msg, color) {
-            const el = document.getElementById('status-msg');
-            el.textContent = msg;
-            el.style.color = color;
         }
 
         // Event Listeners
@@ -238,9 +243,11 @@
             });
         });
 
-        // Start
-        initAdsgram();
-        updateDisplay();
+        // Initialize on load
+        window.onload = () => {
+            initAdsgram();
+            updateDisplay();
+        };
     </script>
 </body>
 </html>
