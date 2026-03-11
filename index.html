@@ -1,194 +1,246 @@
 <!DOCTYPE html>
 <html lang="om">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ethio Coin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ethio Coin · PRO</title>
+    
+    <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-void: #05080d;
+            --bg-surface: #0a0f18;
+            --bg-elevated: #111927;
+            --glass-bg: rgba(14, 22, 35, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-gold: #e5b12e;
+            --accent-teal: #22d3ee;
+        }
 
-<script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-void);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-<style>
-body{
-background:#0b0f19;
-color:white;
-font-family:sans-serif;
-}
+        .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .bg-gradient-layer { background: radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%); }
+        .bg-grid-layer { background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 70%); }
 
-.page{display:none}
-.page.active{display:block}
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .font-display { font-family: 'Syne', sans-serif; }
 
-.btn{
-background:#e5b12e;
-padding:15px;
-border-radius:12px;
-font-weight:bold;
-width:100%;
-}
+        .glass-premium {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px) saturate(1.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-</style>
+        .nav-glass { background: rgba(8, 12, 20, 0.85); backdrop-filter: blur(32px); border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .top-bar-glass { background: rgba(8, 12, 20, 0.75); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .page { display: none; min-height: 100vh; padding-bottom: 140px; position: relative; z-index: 10; }
+        .page.active { display: block; animation: pageReveal 0.5s ease-out; }
+
+        @keyframes pageReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a41a 100%);
+            color: #0a0f18;
+            font-weight: 700;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.2s;
+            box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
+        .status-message { min-height: 1.5rem; font-weight: 600; text-align: center; }
+        .input-premium { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 1.125rem; color: white; }
+    </style>
 </head>
-
-<body class="p-4">
-
-<h1 class="text-2xl mb-4">Ethio Coin</h1>
-
-<div class="mb-6">
-Balance: <span id="balance">0</span> ETC
-</div>
-
-<div class="mb-6">
-Ads watched: <span id="ads">0</span>
-</div>
-
-<button id="watchAd" class="btn">Watch Ad</button>
-
-<p id="status" class="mt-4"></p>
-
-<script>
-
-let coins = Number(localStorage.getItem("coins")) || 0
-let ads = Number(localStorage.getItem("ads")) || 0
-
-const tg = window.Telegram?.WebApp
-let AdController = null
-
-const balanceEl = document.getElementById("balance")
-const adsEl = document.getElementById("ads")
-const statusEl = document.getElementById("status")
-const adBtn = document.getElementById("watchAd")
-
-
-/* Telegram */
-
-if(tg){
-tg.ready()
-tg.expand()
-}
-
-
-/* Display */
-
-function update(){
-
-balanceEl.textContent = coins
-adsEl.textContent = ads
-
-localStorage.setItem("coins",coins)
-localStorage.setItem("ads",ads)
-
-}
-
-update()
-
-
-/* Init Adsgram */
-
-function initAds(){
-
-if(!window.Adsgram){
-console.log("Adsgram not loaded")
-return
-}
-
-AdController = window.Adsgram.init({
-
-blockId:"YOUR_BLOCK_ID",
-debug:false
-
-})
-
-console.log("Adsgram ready")
-
-}
-
-window.addEventListener("load",()=>{
-
-setTimeout(initAds,500)
-
-})
-
-
-/* Status */
-
-function status(msg,color){
-
-statusEl.innerText=msg
-statusEl.style.color=color
-
-}
-
-
-/* Watch Ad */
-
-async function watchAd(){
-
-if(!tg){
-
-status("Open inside Telegram","#ff4d4d")
-return
-
-}
-
-if(!AdController){
-
-initAds()
-
-if(!AdController){
-
-status("Ad system loading","#ff4d4d")
-return
-
-}
-
-}
-
-adBtn.disabled=true
-
-status("Loading ad...","#00eaff")
-
-try{
-
-const result = await AdController.show()
-
-if(result.done){
-
-coins += 100
-ads += 1
-
-update()
-
-status("Reward +100 ETC","#00ff99")
-
-tg.HapticFeedback?.notificationOccurred("success")
-
-}else{
-
-status("Ad skipped","#ffaa00")
-
-}
-
-}catch(e){
-
-console.log(e)
-
-status("No ads available","#ff4d4d")
-
-}
-
-setTimeout(()=>{
-
-adBtn.disabled=false
-status("","")
-
-},2500)
-
-}
-
-adBtn.addEventListener("click",watchAd)
-
-</script>
-
+<body class="no-scrollbar">
+    <div class="bg-layer bg-gradient-layer"></div>
+    <div class="bg-layer bg-grid-layer"></div>
+
+    <header class="top-bar-glass fixed top-0 w-full z-50 px-5 py-4">
+        <div class="max-w-lg mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
+                    <span class="text-amber-400 font-bold">E</span>
+                </div>
+                <div>
+                    <p class="text-[0.6rem] text-slate-500 uppercase font-bold">Total Balance</p>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-xl font-bold font-display" id="total-balance">0</span>
+                        <span class="text-[10px] text-amber-400">ETC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10">
+        <section id="page-home" class="page active pt-24 px-5">
+            <div class="max-w-lg mx-auto space-y-5">
+                <div class="glass-premium p-6">
+                    <h1 class="text-xl font-bold font-display">Baga Nagaan Dhufte</h1>
+                    <p class="text-sm text-slate-400 mb-6">Sassaabbachuuf qophiidhaa?</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <p class="text-[10px] text-slate-500 uppercase">Ads Watched</p>
+                            <p class="text-xl font-bold text-teal-400" id="ads-count">0</p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <p class="text-[10px] text-slate-500 uppercase">Multiplier</p>
+                            <p class="text-xl font-bold text-emerald-400">1.2x</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-watch" class="page pt-24 px-5">
+            <div class="max-w-lg mx-auto">
+                <div class="glass-premium p-8 text-center">
+                    <div class="w-20 h-20 bg-teal-500/10 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-10 h-10 text-teal-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Beeksisa Ilaali</h3>
+                    <p class="text-slate-400 mb-6 text-sm">Beeksisa tokkoon <span class="text-amber-400 font-bold">100 ETC</span> argadhu</p>
+                    <button id="adBtn" class="btn-primary w-full">Beeksisa Jalqabi</button>
+                    <p id="status-msg" class="status-message mt-4 text-sm"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-wallet" class="page pt-24 px-5">
+             <div class="max-w-lg mx-auto glass-premium p-6">
+                <h3 class="text-xl font-bold mb-4">ETC Baafadhu</h3>
+                <input type="text" placeholder="Wallet Address" class="input-premium mb-4">
+                <button class="bg-slate-800 text-slate-500 w-full py-4 rounded-xl font-bold cursor-not-allowed">Min 10,000 ETC</button>
+             </div>
+        </section>
+    </main>
+
+    <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
+        <div class="max-w-lg mx-auto flex justify-around">
+            <button class="nav-item active flex flex-col items-center p-2 rounded-xl" data-page="home">
+                <span class="text-[10px] font-bold">HOME</span>
+            </button>
+            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="watch">
+                <span class="text-[10px] font-bold">ADS</span>
+            </button>
+            <button class="nav-item flex flex-col items-center p-2 rounded-xl" data-page="wallet">
+                <span class="text-[10px] font-bold">WALLET</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // State Management
+        let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
+        let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
+        const tg = window.Telegram?.WebApp;
+        let AdController = null;
+
+        // Telegram WebApp Setup
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        // Initialize Adsgram (Real Ads)
+        function initAdsgram() {
+            if (typeof window.Adsgram !== 'undefined') {
+                AdController = window.Adsgram.init({
+                    blockId: "24893", // ID kee kallaattiin Adsgram irraa fuudhuu qabda
+                    debug: false      // REAL ADS FIDA (False godhi)
+                });
+            }
+        }
+
+        // Update UI
+        function updateDisplay() {
+            document.getElementById('total-balance').textContent = coins.toLocaleString();
+            document.getElementById('ads-count').textContent = adCount;
+            localStorage.setItem('user_coins', coins);
+            localStorage.setItem('ad_count', adCount);
+        }
+
+        // Watch Ad Logic
+        async function watchAd() {
+            if (!AdController) initAdsgram();
+            if (!AdController) {
+                showStatus("Error: Ad system not ready!", "#fb7185");
+                return;
+            }
+
+            const btn = document.getElementById('adBtn');
+            btn.disabled = true;
+            showStatus("Loading Ad...", "#22d3ee");
+
+            try {
+                const result = await AdController.show();
+                if (result && result.done) {
+                    coins += 100;
+                    adCount += 1;
+                    showStatus("Success! +100 ETC", "#34d399");
+                    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                    updateDisplay();
+                } else {
+                    showStatus("Ad closed early.", "#fbbf24");
+                }
+            } catch (error) {
+                showStatus("No Ads Available Now.", "#fb7185");
+                console.error(error);
+            } finally {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    showStatus("", "");
+                }, 3000);
+            }
+        }
+
+        function showStatus(msg, color) {
+            const el = document.getElementById('status-msg');
+            el.textContent = msg;
+            el.style.color = color;
+        }
+
+        // Event Listeners
+        document.getElementById('adBtn').addEventListener('click', watchAd);
+
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = btn.getAttribute('data-page');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${page}`).classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Start
+        initAdsgram();
+        updateDisplay();
+    </script>
 </body>
 </html>
