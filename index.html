@@ -1,106 +1,1804 @@
-<!DOCTYPE html>
-<html lang="om">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ethio Coin · PRO</title>
-    
-    <script src="https://adsgram.ai/js/adsgram-ad-sdk.js" defer></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        :root {
-            --bg-void: #05080d;
-            --glass-bg: rgba(14, 22, 35, 0.65);
-            --accent-gold: #e5b12e;
-        }
-        body { font-family: sans-serif; background: var(--bg-void); color: white; min-height: 100vh; }
-        .glass-premium { background: var(--glass-bg); backdrop-filter: blur(20px); border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); }
-        .btn-primary { background: var(--accent-gold); color: black; font-weight: bold; padding: 1rem; border-radius: 1rem; width: 100%; transition: 0.2s; }
-        .btn-primary:active { transform: scale(0.95); }
-        .page { display: none; padding: 80px 20px; }
-        .active { display: block; }
-        .status-msg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 14px; }
-    </style>
-</head>
-<body>
+ <!DOCTYPE html>
 
-    <header class="fixed top-0 w-full p-5 flex justify-between items-center z-50 bg-black/50">
-        <div class="font-bold text-xl">Ethio Coin <span id="total-balance" class="text-amber-400">0</span> <small class="text-xs">ETC</small></div>
+<html lang="om">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Ethio Coin · PRO</title>
+
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    
+
+    <style>
+
+        :root {
+
+            --bg-void: #05080d;
+
+            --bg-surface: #0a0f18;
+
+            --bg-elevated: #111927;
+
+            --glass-bg: rgba(14, 22, 35, 0.65);
+
+            --glass-border: rgba(255, 255, 255, 0.06);
+
+            --text-primary: #f1f5f9;
+
+            --text-secondary: #94a3b8;
+
+            --text-muted: #64748b;
+
+            --accent-gold: #e5b12e;
+
+            --accent-teal: #22d3ee;
+
+            --accent-rose: #fb7185;
+
+            --accent-emerald: #34d399;
+
+            --accent-violet: #a78bfa;
+
+            --glow-gold: rgba(229, 177, 46, 0.25);
+
+            --glow-teal: rgba(34, 211, 238, 0.2);
+
+        }
+
+
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        html {
+
+            font-size: 16px;
+
+        }
+
+
+
+        body {
+
+            font-family: 'Space Grotesk', sans-serif;
+
+            background: var(--bg-void);
+
+            color: var(--text-primary);
+
+            overflow-x: hidden;
+
+            min-height: 100vh;
+
+            position: relative;
+
+        }
+
+
+
+        /* Dynamic background layers */
+
+        .bg-layer {
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: 0;
+
+        }
+
+
+
+        .bg-gradient-layer {
+
+            background: 
+
+                radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+
+                radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%),
+
+                radial-gradient(ellipse 100% 100% at 50% 0%, rgba(10, 15, 24, 1) 0%, var(--bg-void) 100%);
+
+        }
+
+
+
+        .bg-noise-layer {
+
+            opacity: 0.03;
+
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+
+        }
+
+
+
+        .bg-grid-layer {
+
+            background-image: 
+
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+
+            background-size: 60px 60px;
+
+            mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 70%);
+
+        }
+
+
+
+        /* Particle container */
+
+        #particles-canvas {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1;
+
+            pointer-events: none;
+
+        }
+
+
+
+        /* Scrollbar */
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+
+        /* Typography */
+
+        .font-display {
+
+            font-family: 'Syne', sans-serif;
+
+        }
+
+
+
+        /* Premium glass card */
+
+        .glass-premium {
+
+            background: var(--glass-bg);
+
+            backdrop-filter: blur(24px) saturate(1.4);
+
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
+
+            border: 1px solid var(--glass-border);
+
+            border-radius: 1.5rem;
+
+            box-shadow: 
+
+                0 4px 24px -8px rgba(0, 0, 0, 0.5),
+
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .glass-premium::before {
+
+            content: '';
+
+            position: absolute;
+
+            inset: 0;
+
+            border-radius: inherit;
+
+            padding: 1px;
+
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.02) 100%);
+
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+
+            mask-composite: exclude;
+
+            -webkit-mask-composite: xor;
+
+            pointer-events: none;
+
+        }
+
+
+
+        /* Navigation glass */
+
+        .nav-glass {
+
+            background: rgba(8, 12, 20, 0.85);
+
+            backdrop-filter: blur(32px) saturate(1.6);
+
+            -webkit-backdrop-filter: blur(32px) saturate(1.6);
+
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+        }
+
+
+
+        .top-bar-glass {
+
+            background: rgba(8, 12, 20, 0.75);
+
+            backdrop-filter: blur(24px);
+
+            -webkit-backdrop-filter: blur(24px);
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+        }
+
+
+
+        /* Page system */
+
+        .page {
+
+            display: none;
+
+            min-height: 100vh;
+
+            padding-bottom: 140px;
+
+            position: relative;
+
+            z-index: 10;
+
+        }
+
+
+
+        .page.active {
+
+            display: block;
+
+            animation: pageReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
+        }
+
+
+
+        @keyframes pageReveal {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(16px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+
+        /* Stagger children animation */
+
+        .stagger-child {
+
+            opacity: 0;
+
+            transform: translateY(20px);
+
+        }
+
+
+
+        .page.active .stagger-child {
+
+            animation: staggerIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        }
+
+
+
+        .page.active .stagger-child:nth-child(1) { animation-delay: 0.05s; }
+
+        .page.active .stagger-child:nth-child(2) { animation-delay: 0.1s; }
+
+        .page.active .stagger-child:nth-child(3) { animation-delay: 0.15s; }
+
+        .page.active .stagger-child:nth-child(4) { animation-delay: 0.2s; }
+
+        .page.active .stagger-child:nth-child(5) { animation-delay: 0.25s; }
+
+
+
+        @keyframes staggerIn {
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+
+        /* Buttons */
+
+        .btn-primary {
+
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a41a 100%);
+
+            color: #0a0f18;
+
+            font-weight: 700;
+
+            font-family: 'Syne', sans-serif;
+
+            border: none;
+
+            border-radius: 1rem;
+
+            padding: 1.25rem 2rem;
+
+            cursor: pointer;
+
+            position: relative;
+
+            overflow: hidden;
+
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+            box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
+
+        }
+
+
+
+        .btn-primary::after {
+
+            content: '';
+
+            position: absolute;
+
+            inset: 0;
+
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+
+            transform: translateX(-100%);
+
+            transition: transform 0.4s ease;
+
+        }
+
+
+
+        .btn-primary:hover::after {
+
+            transform: translateX(100%);
+
+        }
+
+
+
+        .btn-primary:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 12px 40px -8px rgba(229, 177, 46, 0.5);
+
+        }
+
+
+
+        .btn-primary:active {
+
+            transform: translateY(0) scale(0.98);
+
+        }
+
+
+
+        .btn-secondary {
+
+            background: rgba(255, 255, 255, 0.04);
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            color: var(--text-primary);
+
+            font-weight: 600;
+
+            border-radius: 1rem;
+
+            padding: 1rem 1.5rem;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            backdrop-filter: blur(8px);
+
+        }
+
+
+
+        .btn-secondary:hover {
+
+            background: rgba(255, 255, 255, 0.08);
+
+            border-color: rgba(255, 255, 255, 0.15);
+
+            transform: translateY(-1px);
+
+        }
+
+
+
+        .btn-secondary:active {
+
+            transform: scale(0.98);
+
+        }
+
+
+
+        .btn-share {
+
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+
+            color: white;
+
+            font-weight: 700;
+
+            font-family: 'Syne', sans-serif;
+
+            border: none;
+
+            border-radius: 1rem;
+
+            padding: 1.25rem 2rem;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            box-shadow: 0 8px 24px -8px rgba(8, 145, 178, 0.4);
+
+        }
+
+
+
+        .btn-share:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 12px 32px -8px rgba(8, 145, 178, 0.5);
+
+        }
+
+
+
+        /* Accent indicators */
+
+        .accent-line {
+
+            width: 4px;
+
+            height: 100%;
+
+            position: absolute;
+
+            left: 0;
+
+            top: 0;
+
+            border-radius: 0 4px 4px 0;
+
+        }
+
+
+
+        .accent-gold { background: linear-gradient(180deg, var(--accent-gold) 0%, rgba(229, 177, 46, 0.3) 100%); }
+
+        .accent-teal { background: linear-gradient(180deg, var(--accent-teal) 0%, rgba(34, 211, 238, 0.3) 100%); }
+
+        .accent-emerald { background: linear-gradient(180deg, var(--accent-emerald) 0%, rgba(52, 211, 153, 0.3) 100%); }
+
+        .accent-rose { background: linear-gradient(180deg, var(--accent-rose) 0%, rgba(251, 113, 133, 0.3) 100%); }
+
+
+
+        /* Navigation items */
+
+        .nav-item {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 0.375rem;
+
+            padding: 0.75rem 1rem;
+
+            border-radius: 1rem;
+
+            cursor: pointer;
+
+            transition: all 0.25s ease;
+
+            color: var(--text-muted);
+
+            background: transparent;
+
+            border: none;
+
+            font-family: inherit;
+
+        }
+
+
+
+        .nav-item:hover {
+
+            color: var(--text-secondary);
+
+        }
+
+
+
+        .nav-item.active {
+
+            color: var(--accent-gold);
+
+            background: rgba(229, 177, 46, 0.08);
+
+        }
+
+
+
+        .nav-item.active .nav-icon {
+
+            transform: translateY(-2px);
+
+        }
+
+
+
+        .nav-icon {
+
+            width: 24px;
+
+            height: 24px;
+
+            transition: transform 0.25s ease;
+
+        }
+
+
+
+        .nav-label {
+
+            font-size: 0.65rem;
+
+            font-weight: 700;
+
+            letter-spacing: 0.08em;
+
+            text-transform: uppercase;
+
+        }
+
+
+
+        /* Stat cards */
+
+        .stat-card {
+
+            background: rgba(255, 255, 255, 0.02);
+
+            border: 1px solid rgba(255, 255, 255, 0.05);
+
+            border-radius: 1rem;
+
+            padding: 1.25rem;
+
+            transition: all 0.25s ease;
+
+        }
+
+
+
+        .stat-card:hover {
+
+            background: rgba(255, 255, 255, 0.04);
+
+            border-color: rgba(255, 255, 255, 0.08);
+
+        }
+
+
+
+        .stat-label {
+
+            font-size: 0.65rem;
+
+            font-weight: 600;
+
+            letter-spacing: 0.1em;
+
+            text-transform: uppercase;
+
+            color: var(--text-muted);
+
+            margin-bottom: 0.5rem;
+
+        }
+
+
+
+        .stat-value {
+
+            font-family: 'Syne', sans-serif;
+
+            font-size: 1.75rem;
+
+            font-weight: 800;
+
+            line-height: 1;
+
+        }
+
+
+
+        /* Progress ring */
+
+        .progress-ring {
+
+            position: relative;
+
+            width: 56px;
+
+            height: 56px;
+
+        }
+
+
+
+        .progress-ring svg {
+
+            transform: rotate(-90deg);
+
+        }
+
+
+
+        .progress-ring-bg {
+
+            stroke: rgba(255, 255, 255, 0.08);
+
+        }
+
+
+
+        .progress-ring-fill {
+
+            stroke: var(--accent-teal);
+
+            stroke-linecap: round;
+
+            transition: stroke-dashoffset 0.5s ease;
+
+        }
+
+
+
+        .progress-ring-text {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 0.7rem;
+
+            font-weight: 700;
+
+            color: var(--text-secondary);
+
+        }
+
+
+
+        /* Input styles */
+
+        .input-premium {
+
+            width: 100%;
+
+            background: rgba(0, 0, 0, 0.3);
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            border-radius: 1rem;
+
+            padding: 1.125rem 1.25rem;
+
+            font-size: 0.9rem;
+
+            font-family: inherit;
+
+            color: var(--text-primary);
+
+            transition: all 0.2s ease;
+
+        }
+
+
+
+        .input-premium::placeholder {
+
+            color: var(--text-muted);
+
+        }
+
+
+
+        .input-premium:focus {
+
+            outline: none;
+
+            border-color: var(--accent-teal);
+
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+
+        }
+
+
+
+        /* Locked button */
+
+        .btn-locked {
+
+            background: rgba(255, 255, 255, 0.03);
+
+            color: var(--text-muted);
+
+            font-weight: 700;
+
+            font-family: 'Syne', sans-serif;
+
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+
+            border-radius: 1rem;
+
+            padding: 1.25rem 2rem;
+
+            cursor: not-allowed;
+
+            opacity: 0.7;
+
+        }
+
+
+
+        /* Animations */
+
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0); }
+
+            50% { transform: translateY(-8px); }
+
+        }
+
+
+
+        @keyframes pulse-glow {
+
+            0%, 100% { opacity: 0.5; }
+
+            50% { opacity: 1; }
+
+        }
+
+
+
+        @keyframes spin-slow {
+
+            from { transform: rotate(0deg); }
+
+            to { transform: rotate(360deg); }
+
+        }
+
+
+
+        .animate-float {
+
+            animation: float 4s ease-in-out infinite;
+
+        }
+
+
+
+        .animate-pulse-glow {
+
+            animation: pulse-glow 2s ease-in-out infinite;
+
+        }
+
+
+
+        /* Status message */
+
+        .status-message {
+
+            min-height: 1.5rem;
+
+            font-weight: 600;
+
+            transition: all 0.3s ease;
+
+        }
+
+
+
+        /* Coin icon animation */
+
+        .coin-icon {
+
+            position: relative;
+
+        }
+
+
+
+        .coin-icon::after {
+
+            content: '';
+
+            position: absolute;
+
+            inset: -8px;
+
+            border-radius: 50%;
+
+            background: radial-gradient(circle, var(--glow-gold) 0%, transparent 70%);
+
+            opacity: 0;
+
+            transition: opacity 0.3s ease;
+
+        }
+
+
+
+        .coin-icon:hover::after {
+
+            opacity: 1;
+
+        }
+
+
+
+        /* Reduced motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *, *::before, *::after {
+
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                transition-duration: 0.01ms !important;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body class="no-scrollbar">
+
+    <!-- Background layers -->
+
+    <div class="bg-layer bg-gradient-layer"></div>
+
+    <div class="bg-layer bg-noise-layer"></div>
+
+    <div class="bg-layer bg-grid-layer"></div>
+
+    
+
+    <!-- Particles canvas -->
+
+    <canvas id="particles-canvas"></canvas>
+
+
+
+    <!-- Top bar -->
+
+    <header class="top-bar-glass fixed top-0 w-full z-50 px-5 py-4">
+
+        <div class="max-w-lg mx-auto flex justify-between items-center">
+
+            <div class="flex items-center gap-3">
+
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/20 flex items-center justify-center">
+
+                    <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                        <circle cx="12" cy="12" r="8"/>
+
+                        <path d="M12 8v8M9 12h6"/>
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <p class="text-[0.6rem] text-slate-500 uppercase tracking-[0.15em] font-semibold">Balance</p>
+
+                    <div class="flex items-baseline gap-1.5">
+
+                        <span class="text-2xl font-bold font-display tracking-tight" id="total-balance">0</span>
+
+                        <span class="text-xs font-bold text-amber-400">ETC</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-white/10 flex items-center justify-center">
+
+                <svg class="w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+
+                </svg>
+
+            </div>
+
+        </div>
+
     </header>
 
-    <main>
-        <section id="page-watch" class="page active">
-            <div class="glass-premium p-10 text-center">
-                <div class="text-5xl mb-5">📺</div>
-                <h3 class="text-xl font-bold mb-2">Beeksisa Ilaali</h3>
-                <p class="text-gray-400 mb-8">Beeksisa tokkoon 100 ETC argadhu</p>
-                
-                <button id="adBtn" class="btn-primary">ADS JALQABI</button>
-                <div id="status-msg" class="status-msg"></div>
+
+
+    <!-- Pages -->
+
+    <main class="relative z-10">
+
+        <!-- HOME PAGE -->
+
+        <section id="page-home" class="page active pt-24 px-5">
+
+            <div class="max-w-lg mx-auto space-y-5">
+
+                <!-- Hero Card -->
+
+                <div class="glass-premium p-6 stagger-child relative">
+
+                    <div class="accent-line accent-gold"></div>
+
+                    <div class="flex items-center gap-4 mb-6">
+
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/15 to-amber-600/5 border border-amber-500/20 flex items-center justify-center animate-float">
+
+                            <svg class="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+
+                            </svg>
+
+                        </div>
+
+                        <div>
+
+                            <h1 class="text-2xl font-bold font-display">Baga Nagaan Dhufte</h1>
+
+                            <p class="text-sm text-slate-400">Maallaqa sassaabbachuuf qophiidhaa</p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="grid grid-cols-2 gap-3">
+
+                        <div class="stat-card">
+
+                            <div class="flex items-center gap-2 mb-2">
+
+                                <svg class="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+
+                                    <path d="M10 9l5 3-5 3V9z"/>
+
+                                </svg>
+
+                                <span class="stat-label mb-0">Ads Watched</span>
+
+                            </div>
+
+                            <p class="stat-value text-teal-400" id="ads-count">0</p>
+
+                        </div>
+
+                        <div class="stat-card">
+
+                            <div class="flex items-center gap-2 mb-2">
+
+                                <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+
+                                </svg>
+
+                                <span class="stat-label mb-0">Bonus Rate</span>
+
+                            </div>
+
+                            <p class="stat-value text-emerald-400">1.2x</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Daily Quest -->
+
+                <div class="glass-premium p-5 stagger-child relative flex items-center gap-4">
+
+                    <div class="accent-line accent-teal"></div>
+
+                    <div class="progress-ring flex-shrink-0">
+
+                        <svg width="56" height="56">
+
+                            <circle class="progress-ring-bg" cx="28" cy="28" r="24" fill="none" stroke-width="4"/>
+
+                            <circle class="progress-ring-fill" cx="28" cy="28" r="24" fill="none" stroke-width="4" stroke-dasharray="150.8" stroke-dashoffset="135.72" id="quest-progress"/>
+
+                        </svg>
+
+                        <span class="progress-ring-text" id="quest-count">0/10</span>
+
+                    </div>
+
+                    <div class="flex-1">
+
+                        <h3 class="font-bold font-display">Daily Quest</h3>
+
+                        <p class="text-sm text-slate-400">Watch 10 ads for bonus reward</p>
+
+                    </div>
+
+                    <div class="text-right">
+
+                        <p class="text-xs text-slate-500">Reward</p>
+
+                        <p class="font-bold text-amber-400">+500</p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Stats Row -->
+
+                <div class="grid grid-cols-2 gap-3 stagger-child">
+
+                    <div class="glass-premium p-4 relative">
+
+                        <div class="accent-line accent-rose"></div>
+
+                        <div class="flex items-center gap-3">
+
+                            <svg class="w-5 h-5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+
+                            </svg>
+
+                            <div>
+
+                                <p class="text-xs text-slate-500">Streak</p>
+
+                                <p class="font-bold text-rose-400">7 Days</p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="glass-premium p-4 relative">
+
+                        <div class="accent-line accent-violet"></div>
+
+                        <div class="flex items-center gap-3">
+
+                            <svg class="w-5 h-5 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <path d="M8 21h8M12 17v4M5 12a7 7 0 1114 0c0 3-2 5-4 6H9c-2-1-4-3-4-6z"/>
+
+                            </svg>
+
+                            <div>
+
+                                <p class="text-xs text-slate-500">Rank</p>
+
+                                <p class="font-bold text-violet-400">Gold</p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </section>
+
+
+
+        <!-- WATCH PAGE -->
+
+        <section id="page-watch" class="page pt-24 px-5">
+
+            <div class="max-w-lg mx-auto">
+
+                <h2 class="text-2xl font-bold font-display mb-6 stagger-child">
+
+                    Video <span class="text-teal-400">Rewards</span>
+
+                </h2>
+
+
+
+                <div class="glass-premium p-8 text-center stagger-child relative">
+
+                    <div class="accent-line accent-teal"></div>
+
+                    
+
+                    <!-- Video Icon Container -->
+
+                    <div class="w-28 h-28 mx-auto mb-6 relative">
+
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-500/10 animate-pulse-glow"></div>
+
+                        <div class="absolute inset-2 rounded-full bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-teal-500/30 flex items-center justify-center">
+
+                            <svg class="w-10 h-10 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+
+                                <rect x="2" y="4" width="20" height="16" rx="3"/>
+
+                                <path d="M10 9l5 3-5 3V9z" fill="currentColor"/>
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <h3 class="text-xl font-bold font-display mb-2">Watch Ad</h3>
+
+                    <p class="text-slate-400 mb-6 text-sm">Watch a short video and earn <span class="text-amber-400 font-bold">100 Coins</span> instantly.</p>
+
+
+
+                    <button id="adBtn" class="btn-primary w-full flex items-center justify-center gap-2">
+
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+
+                            <path d="M8 5v14l11-7z"/>
+
+                        </svg>
+
+                        <span>Start Video Ad</span>
+
+                    </button>
+
+
+
+                    <p id="status-msg" class="status-message mt-4 text-sm"></p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- INVITE PAGE -->
+
+        <section id="page-invite" class="page pt-24 px-5">
+
+            <div class="max-w-lg mx-auto">
+
+                <h2 class="text-2xl font-bold font-display mb-6 stagger-child">
+
+                    Referral <span class="text-emerald-400">Program</span>
+
+                </h2>
+
+
+
+                <div class="glass-premium p-8 text-center stagger-child relative">
+
+                    <div class="accent-line accent-emerald"></div>
+
+                    
+
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-500/20 to-green-500/10 border border-emerald-500/30 flex items-center justify-center animate-float">
+
+                        <svg class="w-10 h-10 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+
+                            <circle cx="9" cy="7" r="4"/>
+
+                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+
+                        </svg>
+
+                    </div>
+
+
+
+                    <h3 class="text-xl font-bold font-display mb-2">Invite Friends</h3>
+
+                    <p class="text-slate-300 mb-8">Hiriyaa kee affeeri, tokkoon tokkoo isaanitiif <span class="text-emerald-400 font-bold text-lg">500 Coins</span> fudhu.</p>
+
+
+
+                    <div class="space-y-3">
+
+                        <button id="copy-btn" class="btn-secondary w-full flex items-center justify-center gap-2">
+
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <rect x="9" y="9" width="13" height="13" rx="2"/>
+
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+
+                            </svg>
+
+                            <span>Copy Invite Link</span>
+
+                        </button>
+
+                        <button id="share-btn" class="btn-share w-full flex items-center justify-center gap-2">
+
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+
+                            </svg>
+
+                            <span>Share on Telegram</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- WALLET PAGE -->
+
+        <section id="page-wallet" class="page pt-24 px-5">
+
+            <div class="max-w-lg mx-auto">
+
+                <h2 class="text-2xl font-bold font-display mb-6 stagger-child">
+
+                    My <span class="text-rose-400">Wallet</span>
+
+                </h2>
+
+
+
+                <div class="glass-premium p-6 space-y-6 stagger-child relative">
+
+                    <div class="accent-line accent-rose"></div>
+
+                    
+
+                    <div>
+
+                        <label class="stat-label block mb-2">TON Wallet Address</label>
+
+                        <input type="text" id="wallet-input" placeholder="UQ... or Wallet ID" class="input-premium">
+
+                    </div>
+
+
+
+                    <div class="p-5 rounded-xl bg-gradient-to-r from-rose-500/10 to-pink-500/5 border border-rose-500/20">
+
+                        <div class="flex items-center gap-2 mb-1">
+
+                            <svg class="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                <circle cx="12" cy="12" r="10"/>
+
+                                <path d="M12 6v6l4 2"/>
+
+                            </svg>
+
+                            <span class="text-xs text-rose-400 font-semibold uppercase tracking-wider">Minimum Payout</span>
+
+                        </div>
+
+                        <p class="text-2xl font-bold font-display">10,000 Coins</p>
+
+                        <p class="text-sm text-slate-500">≈ $10.00</p>
+
+                    </div>
+
+
+
+                    <button id="withdraw-btn" class="btn-locked w-full flex items-center justify-center gap-2">
+
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+
+                        </svg>
+
+                        <span>Withdraw Locked</span>
+
+                    </button>
+
+
+
+                    <p class="text-center text-xs text-slate-600">Withdrawals open soon</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
+
+
+    <!-- Bottom Navigation -->
+
+    <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
+
+        <div class="max-w-lg mx-auto flex justify-around items-center">
+
+            <button class="nav-item active" data-page="home">
+
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+
+                </svg>
+
+                <span class="nav-label">Home</span>
+
+            </button>
+
+            <button class="nav-item" data-page="watch">
+
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+
+                    <path d="M10 9l5 3-5 3V9z"/>
+
+                </svg>
+
+                <span class="nav-label">Ads</span>
+
+            </button>
+
+            <button class="nav-item" data-page="invite">
+
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+
+                    <circle cx="9" cy="7" r="4"/>
+
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+
+                </svg>
+
+                <span class="nav-label">Invite</span>
+
+            </button>
+
+            <button class="nav-item" data-page="wallet">
+
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                    <path d="M21 4H3a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2z"/>
+
+                    <path d="M1 10h22"/>
+
+                </svg>
+
+                <span class="nav-label">Wallet</span>
+
+            </button>
+
+        </div>
+
+    </nav>
+
+
+
     <script>
+
+        // Initialize variables first
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
-        let AdController = null;
 
-        // 1. SDK akka fe'ame mirkaneessuuf
-        function setupAds() {
-            if (window.Adsgram) {
-                AdController = window.Adsgram.init({
-                    blockId: "24893", 
-                    debug: true // Jalqaba irratti Test Ad akka dhufuuf TRUE dha. Sana booda FALSE godhuu dandeessa.
-                });
-                console.log("Adsgram Ready!");
-            } else {
-                console.log("Waiting for SDK...");
-                setTimeout(setupAds, 1000); // Yoo fe'amee hin xumurre yeroo 1s booda irra deebi'a
-            }
+        let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
+
+        let particles = [];
+
+        let animationId = null;
+
+
+
+        // Telegram WebApp
+
+        const tg = window.Telegram?.WebApp;
+
+        if (tg) {
+
+            tg.ready();
+
+            tg.expand();
+
+            tg.setHeaderColor('#05080d');
+
+            tg.setBackgroundColor('#05080d');
+
         }
 
-        async function showAd() {
-            const status = document.getElementById('status-msg');
-            const btn = document.getElementById('adBtn');
 
-            if (!AdController) {
-                status.innerText = "Beeksisi hin qophoofne, daqiiqaa tokko eegi...";
-                status.style.color = "red";
-                setupAds();
-                return;
-            }
 
-            btn.disabled = true;
-            status.innerText = "Beeksisa fidaa jira...";
-            status.style.color = "#22d3ee";
+        // DOM Elements
 
-            try {
-                const result = await AdController.show();
-                if (result.done) {
-                    coins += 100;
-                    document.getElementById('total-balance').innerText = coins.toLocaleString();
-                    localStorage.setItem('user_coins', coins);
-                    status.innerText = "Gariidha! +100 ETC";
-                    status.style.color = "#34d399";
-                }
-            } catch (e) {
-                status.innerText = "Hammaaf beeksisi dhabameera.";
-                status.style.color = "red";
-            } finally {
-                setTimeout(() => {
-                    btn.disabled = false;
-                    status.innerText = "";
-                }, 3000);
-            }
-        }
+        const totalBalanceEl = document.getElementById('total-balance');
 
-        document.getElementById('adBtn').onclick = showAd;
-        document.getElementById('total-balance').innerText = coins.toLocaleString();
-        
-        // SDK jalqaba irratti waami
-        setupAds();
-    </script>
+        const adsCountEl = document.getElementById('ads-count');
+
+        const questProgressEl = document.getElementById('quest-progress');
+
+        const questCountEl = document.getElementById('quest-count');
+
+        const adBtn = document.getElementById('adBtn');
+
+        const statusMsg = document.getElementById('status-msg');
+
+    const copyBtn = document.getElementById('copy-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const withdrawBtn = document.getElementById('withdraw-btn');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        // Update display
+        function updateDisplay() {
+            if (totalBalanceEl) {
+                totalBalanceEl.textContent = coins.toLocaleString();
+            }
+            if (adsCountEl) {
+                adsCountEl.textContent = adCount;
+            }
+            
+            // Update quest progress
+            const questGoal = 10;
+            const progress = Math.min(adCount, questGoal);
+            const circumference = 150.8;
+            const offset = circumference - (progress / questGoal) * circumference;
+            
+            if (questProgressEl) {
+                questProgressEl.setAttribute('stroke-dashoffset', Math.max(0, offset).toString());
+            }
+            if (questCountEl) {
+                questCountEl.textContent = `${progress}/${questGoal}`;
+            }
+            
+            localStorage.setItem('user_coins', coins.toString());
+            localStorage.setItem('ad_count', adCount.toString());
+        }
+
+        // Page navigation
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        // Nav item click handlers
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.getAttribute('data-page');
+                if (pageId) {
+                    showPage(pageId);
+                }
+            });
+        });
+
+        // Adsgram
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "24893", debug: false }) : null;
+
+        async function watchAd() {
+            if (!AdController) {
+                if (statusMsg) {
+                    statusMsg.textContent = "Ad service unavailable";
+                    statusMsg.style.color = "#fb7185";
+                }
+                return;
+            }
+
+            if (adBtn) {
+                adBtn.disabled = true;
+                adBtn.style.opacity = "0.6";
+            }
+            if (statusMsg) {
+                statusMsg.textContent = "Loading ad...";
+                statusMsg.style.color = "#22d3ee";
+            }
+
+            try {
+                const result = await AdController.show();
+                if (result && result.done) {
+                    coins += 100;
+                    adCount += 1;
+                    updateDisplay();
+                    if (statusMsg) {
+                        statusMsg.textContent = "Success! +100 Coins";
+                        statusMsg.style.color = "#34d399";
+                    }
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                } else {
+                    if (statusMsg) {
+                        statusMsg.textContent = "Ad not completed";
+                        statusMsg.style.color = "#fb7185";
+                    }
+                }
+            } catch (e) {
+                if (statusMsg) {
+                    statusMsg.textContent = "Ad temporarily unavailable";
+                    statusMsg.style.color = "#fb7185";
+                }
+            } finally {
+                setTimeout(() => {
+                    if (adBtn) {
+                        adBtn.disabled = false;
+                        adBtn.style.opacity = "1";
+                    }
+                    if (statusMsg) {
+                        statusMsg.textContent = "";
+                    }
+                }, 3000);
+            }
+        }
+
+        if (adBtn) {
+            adBtn.addEventListener('click', watchAd);
+        }
+
+        // Copy invite link
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText("https://t.me/Ethio_Coin1_bot").then(() => {
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = `
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                        <span>Copied!</span>
+                    `;
+                    copyBtn.style.borderColor = "#34d399";
+                    copyBtn.style.color = "#34d399";
+                    
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                        copyBtn.style.borderColor = "";
+                        copyBtn.style.color = "";
+                    }, 2000);
+                });
+            });
+        }
+
+        // Share on Telegram
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const url = "https://t.me/share/url?url=https://t.me/Ethio_Coin1_bot&text=Kootu maallaqa waliin hojjennu!";
+                if (tg) {
+                    tg.openTelegramLink(url);
+                } else {
+                    window.open(url, '_blank');
+                }
+            });
+        }
+
+        // Withdraw button
+        if (withdrawBtn) {
+            withdrawBtn.addEventListener('click', () => {
+                if (coins >= 10000) {
+                    alert('Withdrawal request submitted!');
+                } else {
+                    alert(`Kaffaltiin kan jalqabu yoo 10,000 geessaniidha! Har'a ${coins.toLocaleString()} qabda.`);
+                }
+            });
+        }
+
+        // Particle system
+        function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            if (!canvas || prefersReducedMotion) return;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.max(0.5, Math.random() * 2),
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    opacity: Math.random() * 0.4 + 0.1
+                });
+            }
+
+            function animate() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = canvas.width;
+                    if (p.x > canvas.width) p.x = 0;
+                    if (p.y < 0) p.y = canvas.height;
+                    if (p.y > canvas.height) p.y = 0;
+
+                    ctx.beginPath();
+                    const radius = Math.max(0.1, p.radius);
+                    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    const opacity = Math.max(0, Math.min(1, p.opacity));
+                    ctx.fillStyle = `rgba(229, 177, 46, ${opacity})`;
+                    ctx.fill();
+                });
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Initialize
+        updateDisplay();
+        initParticles();
+    </script>
 </body>
-</html>
+</html> 
