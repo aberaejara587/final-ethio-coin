@@ -3,129 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethio Coin Reward - Adsgram</title>
+    <title>Ethio Coin Reward</title>
     
     <script src="https://adsgram.ai/sdk/v1/adsgames.js"></script>
-    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: radial-gradient(circle, #2c3e50, #000000);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
             color: white;
         }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
             border-radius: 30px;
             text-align: center;
-            width: 90%;
-            max-width: 380px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 340px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
-
         .coin-icon {
-            font-size: 80px;
-            filter: drop-shadow(0 0 15px #ffd700);
-            animation: bounce 2s infinite;
+            font-size: 70px;
             margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px #ffd700);
         }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        h2 { font-weight: 300; margin-bottom: 5px; }
-        
         #coin-count {
-            font-size: 50px;
+            font-size: 55px;
             font-weight: 800;
             color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-            margin-bottom: 5px;
+            margin: 10px 0;
         }
-
-        .reward-info {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-
         .ad-button {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
+            background: #ffd700;
             color: #000;
             border: none;
-            padding: 18px 25px;
-            border-radius: 20px;
+            padding: 18px;
+            border-radius: 15px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .ad-button:hover {
-            transform: scale(1.03);
-            background: #fff;
-        }
-
-        .ad-button:active {
-            transform: scale(0.97);
-        }
-
-        .ad-button:disabled {
-            background: #666;
-            color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Loading Spinner */
-        .loader {
-            display: none;
-            width: 22px;
-            height: 22px;
-            border: 3px solid #000;
-            border-bottom-color: transparent;
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-
-        .footer-text {
             margin-top: 20px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
+        }
+        .ad-button:active { transform: scale(0.95); }
+        .ad-button:disabled { background: #555; cursor: not-allowed; }
+        
+        #status-msg {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #ff4757;
+            min-height: 20px;
         }
     </style>
 </head>
@@ -134,67 +69,68 @@
 <div class="card">
     <div class="coin-icon">🪙</div>
     <h2 id="coin-count">0</h2>
-    <p class="reward-info">Ethio Coins Galmeeffame</p>
+    <p style="opacity: 0.7;">Ethio Coins</p>
     
     <button class="ad-button" id="adBtn" onclick="watchAd()">
-        <span class="loader" id="loader"></span>
-        <span id="btnText">📺 Beeksisa Ilaali (+100)</span>
+        📺 BE EKSISA ILAALI
     </button>
-
-    <p class="footer-text">Powered by Adsgram • Block ID: 24893</p>
+    <div id="status-msg"></div>
 </div>
 
 <script>
-    // Telegram WebApp expand gochuuf
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
+    // Telegram expand
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
     }
 
     let coins = 0;
     const btn = document.getElementById('adBtn');
-    const loader = document.getElementById('loader');
-    const btnText = document.getElementById('btnText');
     const coinDisplay = document.getElementById('coin-count');
+    const statusMsg = document.getElementById('status-msg');
 
-    // Adsgram Initialize - Block ID 24893
-    // Debug Mode: true godheera akka beeksiisni akka fidu gargaaruuf
+    // Adsgram Initialize - Block ID KEETIIN
     const AdController = window.Adsgram.init({ 
-        blockId: "24893",
-        debug: true 
+        blockId: "24893", 
+        debug: false // Beeksisa dhugaa fiduuf false ta'uu qaba
     });
 
     async function watchAd() {
-        // Button disable godhi
+        statusMsg.innerText = "Beeksisa barbaadaa jira...";
         btn.disabled = true;
-        loader.style.display = "inline-block";
-        btnText.innerText = "Loading Ad...";
 
         try {
-            // Beeksisa waamuu
+            // Beeksisa agarsiisuu
             const result = await AdController.show();
             
-            if (result.done) {
-                // Yoo xumurame badhaasa kenni
+            // Yoo milkaa'e (result.done == true)
+            if (result && result.done) {
                 coins += 100;
                 coinDisplay.innerText = coins;
-                alert("Baay'ee gaari! Badhaasa kee +100 Coins argatteetta. ✅");
+                statusMsg.style.color = "#2ed573";
+                statusMsg.innerText = "Milkaa'inaan xumurame! +100";
+                if (tg) tg.HapticFeedback.notificationOccurred('success');
             }
         } catch (err) {
-            console.error("Adsgram error details:", err);
+            console.error(err);
+            statusMsg.style.color = "#ff4757";
             
-            if (err.error === 'not_found') {
-                alert("Beeksiisni amma dhiyaachuu hin dandeenye. Maaloo booda yaali.");
-            } else if (err.error === 'render_failed') {
-                alert("Beeksisa fiduu irratti rakkoon uumame.");
+            // Error adda addaa kantirolii gochuuf
+            if (err.error === 'not_found' || err.error === 'no_fill') {
+                statusMsg.innerText = "Beeksiisni amma hin jiru, daqiiqaa muraasa booda yaali.";
+            } else if (err.error === 'closed') {
+                statusMsg.innerText = "Beeksisa osoo hin xumurin cufte!";
             } else {
-                alert("Beeksisa ilaaltee hin xumurre! ⚠️");
+                statusMsg.innerText = "Rakkoon uumame, deebisii yaali.";
             }
         } finally {
-            // Button deebisii banu
-            btn.disabled = false;
-            loader.style.display = "none";
-            btnText.innerText = "📺 Beeksisa Ilaali (+100)";
+            setTimeout(() => {
+                btn.disabled = false;
+                if(statusMsg.innerText !== "Milkaa'inaan xumurame! +100") {
+                    statusMsg.innerText = "";
+                }
+            }, 3000);
         }
     }
 </script>
