@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ethio Coin · PRO</title>
+    
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,14 +22,8 @@
             --glass-border: rgba(255, 255, 255, 0.06);
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
-            --text-muted: #64748b;
             --accent-gold: #e5b12e;
             --accent-teal: #22d3ee;
-            --accent-rose: #fb7185;
-            --accent-emerald: #34d399;
-            --accent-violet: #a78bfa;
-            --glow-gold: rgba(229, 177, 46, 0.25);
-            --glow-teal: rgba(34, 211, 238, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,8 +36,7 @@
         }
 
         .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-        .bg-gradient-layer { background: radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%), radial-gradient(ellipse 100% 100% at 50% 0%, rgba(10, 15, 24, 1) 0%, var(--bg-void) 100%); }
-        .bg-noise-layer { opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+        .bg-gradient-layer { background: radial-gradient(ellipse 80% 60% at 10% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(229, 177, 46, 0.06) 0%, transparent 50%); }
         .bg-grid-layer { background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 70%); }
 
         #particles-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
@@ -52,7 +46,6 @@
         .glass-premium {
             background: var(--glass-bg);
             backdrop-filter: blur(24px) saturate(1.4);
-            -webkit-backdrop-filter: blur(24px) saturate(1.4);
             border: 1px solid var(--glass-border);
             border-radius: 1.5rem;
             position: relative;
@@ -76,9 +69,8 @@
             transition: all 0.2s;
             box-shadow: 0 8px 32px -8px rgba(229, 177, 46, 0.4);
         }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; padding: 1rem; }
         .nav-item.active { color: var(--accent-gold); background: rgba(229, 177, 46, 0.08); }
         .accent-line { width: 4px; height: 100%; position: absolute; left: 0; top: 0; }
         .accent-gold { background: var(--accent-gold); }
@@ -91,18 +83,17 @@
 </head>
 <body class="no-scrollbar">
     <div class="bg-layer bg-gradient-layer"></div>
-    <div class="bg-layer bg-noise-layer"></div>
     <div class="bg-layer bg-grid-layer"></div>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-bar-glass fixed top-0 w-full z-50 px-5 py-4">
         <div class="max-w-lg mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/20 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
                     <span class="text-amber-400 font-bold">E</span>
                 </div>
                 <div>
-                    <p class="text-[0.6rem] text-slate-500 uppercase font-semibold">Balance</p>
+                    <p class="text-[0.6rem] text-slate-500 uppercase font-bold">Total Balance</p>
                     <div class="flex items-baseline gap-1">
                         <span class="text-xl font-bold font-display" id="total-balance">0</span>
                         <span class="text-[10px] text-amber-400">ETC</span>
@@ -118,7 +109,7 @@
                 <div class="glass-premium p-6 relative">
                     <div class="accent-line accent-gold"></div>
                     <h1 class="text-xl font-bold font-display">Baga Nagaan Dhufte</h1>
-                    <p class="text-sm text-slate-400 mb-6">Maallaqa sassaabbachuuf qophiidhaa?</p>
+                    <p class="text-sm text-slate-400 mb-6">Sassaabbachuuf qophiidhaa?</p>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-white/5 p-4 rounded-xl">
                             <p class="text-[10px] text-slate-500 uppercase">Ads Watched</p>
@@ -156,7 +147,7 @@
                         <svg class="w-10 h-10 text-teal-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Watch Video Ad</h3>
-                    <p class="text-slate-400 mb-6 text-sm">Watch to earn <span class="text-amber-400 font-bold">100 Coins</span></p>
+                    <p class="text-slate-400 mb-6 text-sm">Earn <span class="text-amber-400 font-bold">100 Coins</span> per view</p>
                     <button id="adBtn" class="btn-primary w-full">Start Video Ad</button>
                     <p id="status-msg" class="status-message mt-4 text-sm"></p>
                 </div>
@@ -165,92 +156,71 @@
 
         <section id="page-invite" class="page pt-24 px-5">
              <div class="max-w-lg mx-auto glass-premium p-6">
-                <div class="accent-line accent-emerald"></div>
                 <h3 class="text-xl font-bold mb-4">Invite Friends</h3>
-                <button id="copy-btn" class="btn-secondary w-full mb-3">Copy Link</button>
                 <button id="share-btn" class="btn-primary w-full">Share on Telegram</button>
              </div>
         </section>
-
+        
         <section id="page-wallet" class="page pt-24 px-5">
              <div class="max-w-lg mx-auto glass-premium p-6">
-                <div class="accent-line accent-rose"></div>
                 <h3 class="text-xl font-bold mb-4">Withdraw</h3>
-                <input type="text" placeholder="TON Wallet Address" class="input-premium mb-4">
-                <button id="withdraw-btn" class="bg-slate-800 text-slate-500 w-full py-4 rounded-xl font-bold cursor-not-allowed">Withdraw (Min 10,000)</button>
+                <input type="text" placeholder="Wallet Address" class="input-premium mb-4">
+                <button class="bg-slate-800 text-slate-500 w-full py-4 rounded-xl font-bold cursor-not-allowed">Min 10,000 ETC</button>
              </div>
         </section>
     </main>
 
     <nav class="nav-glass fixed bottom-0 w-full z-50 px-4 py-3">
         <div class="max-w-lg mx-auto flex justify-around">
-            <button class="nav-item active flex flex-col items-center" data-page="home">
-                <span class="text-[10px] font-bold">HOME</span>
-            </button>
-            <button class="nav-item flex flex-col items-center" data-page="watch">
-                <span class="text-[10px] font-bold">ADS</span>
-            </button>
-            <button class="nav-item flex flex-col items-center" data-page="invite">
-                <span class="text-[10px] font-bold">INVITE</span>
-            </button>
-            <button class="nav-item flex flex-col items-center" data-page="wallet">
-                <span class="text-[10px] font-bold">WALLET</span>
-            </button>
+            <button class="nav-item active flex flex-col items-center" data-page="home"><span class="text-[10px] font-bold">HOME</span></button>
+            <button class="nav-item flex flex-col items-center" data-page="watch"><span class="text-[10px] font-bold">ADS</span></button>
+            <button class="nav-item flex flex-col items-center" data-page="invite"><span class="text-[10px] font-bold">INVITE</span></button>
+            <button class="nav-item flex flex-col items-center" data-page="wallet"><span class="text-[10px] font-bold">WALLET</span></button>
         </div>
     </nav>
 
     <script>
-        // Data & State
+        // State
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
         const tg = window.Telegram?.WebApp;
-
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
-
-        // Adsgram Initialization with Error Fallback
         let AdController = null;
-        try {
-            if (window.Adsgram) {
-                AdController = window.Adsgram.init({ blockId: "24893", debug: false });
-            }
-        } catch (e) {
-            console.error("Adsgram init error:", e);
+
+        if (tg) { tg.ready(); tg.expand(); }
+
+        // Function to initialize AdController safely
+        function initAdsgram() {
+            try {
+                if (window.Adsgram) {
+                    AdController = window.Adsgram.init({ blockId: "24893", debug: false });
+                    console.log("Adsgram ready.");
+                }
+            } catch (e) { console.error("Adsgram init error", e); }
         }
 
-        // UI Elements
+        // Try to init on load
+        window.onload = initAdsgram;
+
         const totalBalanceEl = document.getElementById('total-balance');
         const adsCountEl = document.getElementById('ads-count');
-        const questProgressEl = document.getElementById('quest-progress');
-        const questCountEl = document.getElementById('quest-count');
         const statusMsg = document.getElementById('status-msg');
         const adBtn = document.getElementById('adBtn');
 
         function updateDisplay() {
             totalBalanceEl.textContent = coins.toLocaleString();
             adsCountEl.textContent = adCount;
-            
-            const goal = 10;
-            const progress = Math.min(adCount, goal);
-            const offset = 100 - (progress / goal * 100);
-            if (questProgressEl) questProgressEl.style.strokeDashoffset = offset;
-            if (questCountEl) questCountEl.textContent = `${progress}/${goal}`;
-
             localStorage.setItem('user_coins', coins);
             localStorage.setItem('ad_count', adCount);
         }
 
         async function watchAd() {
-            // Re-check Controller if it was null
-            if (!AdController && window.Adsgram) {
-                AdController = window.Adsgram.init({ blockId: "24893", debug: false });
-            }
-
+            // RETRY LOGIC: If controller is not ready, try to re-init
             if (!AdController) {
-                showStatus("Ad service not ready. Refresh!", "#fb7185");
-                return;
+                initAdsgram();
+                if (!AdController) {
+                    showStatus("Connection poor. Please wait...", "#fb7185");
+                    return;
+                }
             }
 
             adBtn.disabled = true;
@@ -265,17 +235,16 @@
                     tg?.HapticFeedback?.notificationOccurred('success');
                     updateDisplay();
                 } else {
-                    showStatus("Ad closed early", "#fb7185");
+                    showStatus("Ad skipped.", "#fb7185");
                 }
             } catch (e) {
-                console.error("Adsgram Error:", e);
-                // Handle specific error codes if needed
-                showStatus("No ads available. Try again later.", "#fb7185");
+                console.error(e);
+                showStatus("No ads available now.", "#fb7185");
             } finally {
                 setTimeout(() => {
                     adBtn.disabled = false;
                     showStatus("", "");
-                }, 3000);
+                }, 2000);
             }
         }
 
@@ -286,72 +255,18 @@
             }
         }
 
-        // Navigation Logic
+        // UI Listeners
+        adBtn?.addEventListener('click', watchAd);
+
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                const targetPage = document.getElementById(`page-${page}`);
-                if (targetPage) targetPage.classList.add('active');
-                
+                document.getElementById(`page-${page}`).classList.add('active');
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btn.classList.add('active');
-                tg?.HapticFeedback?.impactOccurred('light');
             });
         });
-
-        adBtn?.addEventListener('click', watchAd);
-        
-        document.getElementById('copy-btn')?.addEventListener('click', () => {
-            const link = "https://t.me/Ethio_Coin1_bot";
-            navigator.clipboard.writeText(link).then(() => {
-                tg?.HapticFeedback?.notificationOccurred('success');
-                alert("Referral link copied!");
-            });
-        });
-
-        document.getElementById('share-btn')?.addEventListener('click', () => {
-            const url = "https://t.me/share/url?url=https://t.me/Ethio_Coin1_bot&text=Kootu maallaqa waliin hojjennu!";
-            tg ? tg.openTelegramLink(url) : window.open(url, '_blank');
-        });
-
-        // Background Particles
-        const canvas = document.getElementById('particles-canvas');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            
-            function initParticles() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                particles = [];
-                for(let i=0; i<30; i++) {
-                    particles.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        vx: (Math.random()-0.5)*0.5,
-                        vy: (Math.random()-0.5)*0.5,
-                        r: Math.random() * 2
-                    });
-                }
-            }
-
-            function drawParticles() {
-                ctx.clearRect(0,0,canvas.width, canvas.height);
-                ctx.fillStyle = "rgba(229, 177, 46, 0.2)";
-                particles.forEach(p => {
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x<0) p.x=canvas.width; if(p.x>canvas.width) p.x=0;
-                    if(p.y<0) p.y=canvas.height; if(p.y>canvas.height) p.y=0;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
-                });
-                requestAnimationFrame(drawParticles);
-            }
-
-            window.addEventListener('resize', initParticles);
-            initParticles();
-            drawParticles();
-        }
 
         updateDisplay();
     </script>
