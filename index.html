@@ -56,7 +56,7 @@
             backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255,255,255,0.05);
         }
-        .nav-item { color: #64748b; font-size: 0.75rem; font-weight: bold; }
+        .nav-item { color: #64748b; font-size: 0.75rem; font-weight: bold; background: transparent; border: none; cursor: pointer; }
         .nav-item.active { color: var(--accent-gold); }
     </style>
 </head>
@@ -78,7 +78,7 @@
     <main class="pb-32">
         <section id="page-home" class="page active">
             <div class="max-w-lg mx-auto glass-premium p-8 text-center">
-                <h2 class="text-2xl font-bold mb-3 font-display">Baga Nagaan Dhufte!</h2>
+                <h2 class="text-2xl font-bold mb-3">Baga Nagaan Dhufte!</h2>
                 <p class="text-slate-400 text-sm">Beeksisa ilaaluun ETC sassaabbadhu.</p>
             </div>
         </section>
@@ -98,7 +98,7 @@
                     Beeksisa Jalqabi
                 </button>
                 
-                <p id="status-msg" class="mt-6 text-sm font-semibold min-h-[1.25rem] transition-all"></p>
+                <p id="status-msg" class="mt-6 text-sm font-semibold min-h-[1.25rem]"></p>
             </div>
         </section>
 
@@ -123,7 +123,6 @@
     </nav>
 
     <script>
-        // Telegram WebApp Initialize
         const tg = window.Telegram.WebApp;
         tg.expand();
 
@@ -135,13 +134,13 @@
             localStorage.setItem('user_coins', coins);
         }
 
-        // Adsgram Initialize
+        // Adsgram Initialize - Corrected
         function initAdsgram() {
             if (window.Adsgram) {
-                AdController = window.Adsgram.init({
-                    blockId: "24893", // ASITTI: ID kee isa sirrii galchi
-                    debug: false      // Beeksisa dhugaa fiduuf 'false' ta'uu qaba
-                });
+                // '24893' kana ID kee isa dhugaa dashboard Adsgram irratti argattuun bakka buusi
+                AdController = window.Adsgram.init({ blockId: "24893" });
+            } else {
+                console.error("Adsgram SDK not found");
             }
         }
 
@@ -149,40 +148,35 @@
             const btn = document.getElementById('adBtn');
             const status = document.getElementById('status-msg');
 
-            if (!AdController) {
-                initAdsgram();
-            }
-
-            if (!AdController) {
-                status.innerText = "Error: Ad system not ready!";
-                status.style.color = "#fb7185";
-                return;
-            }
+            if (!AdController) initAdsgram();
+            if (!AdController) return;
 
             btn.disabled = true;
             status.innerText = "Beeksisa fidaa jira...";
             status.style.color = "#e5b12e";
 
-            try {
-                const result = await AdController.show();
-                if (result.done) {
-                    coins += 100;
-                    updateBalance();
-                    status.innerText = "Gariidha! +100 ETC argatteetta.";
-                    status.style.color = "#34d399";
-                    tg.HapticFeedback.notificationOccurred('success');
+            AdController.show().then((result) => {
+                // Beeksisa xumureera
+                coins += 100;
+                updateBalance();
+                status.innerText = "Gariidha! +100 ETC argatteetta.";
+                status.style.color = "#34d399";
+                tg.HapticFeedback.notificationOccurred('success');
+            }).catch((result) => {
+                // Yoo rakkoon uumame ykn user beeksisa dhiise (skip)
+                if (result.error) {
+                    status.innerText = "Beeksisi dhabameera, lammata yaali.";
+                } else {
+                    status.innerText = "Beeksisa xumuruu qabda!";
                 }
-            } catch (err) {
-                console.error(err);
-                status.innerText = "Beeksisi dhabameera, lammata yaali.";
                 status.style.color = "#fb7185";
                 tg.HapticFeedback.notificationOccurred('error');
-            } finally {
+            }).finally(() => {
                 setTimeout(() => {
                     btn.disabled = false;
                     status.innerText = "";
-                }, 4000);
-            }
+                }, 3000);
+            });
         }
 
         function showPage(pageId) {
@@ -192,7 +186,6 @@
             document.getElementById('nav-' + pageId).classList.add('active');
         }
 
-        // Event Listeners
         document.getElementById('adBtn').onclick = runAd;
 
         window.onload = () => {
