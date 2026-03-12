@@ -1,10 +1,19 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="om">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ethio Coin Reward Pro</title>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    
+    <script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
+    <script>
+        window.TelegramAdsController = new TelegramAdsController();
+        window.TelegramAdsController.initialize({
+            pubId: "1004916",
+            appId: "6538",
+        });
+    </script>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -43,6 +52,7 @@
             </div>
         </div>
     </div>
+
     <div id="watch" class="page p-6 pt-24">
         <h2 class="text-xl font-bold mb-4">Video Rewards</h2>
         <div class="glass rounded-3xl p-10 text-center border-t-4 border-yellow-500">
@@ -104,7 +114,6 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
 
-        // LocalStorage fayyadamnee balance kuusuu
         let coins = parseFloat(localStorage.getItem('user_coins')) || 0;
         let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
 
@@ -115,9 +124,8 @@
             localStorage.setItem('ad_count', adCount);
         }
 
-        updateDisplay(); // Page yeroo reload ta'u deebisee fida
+        updateDisplay();
 
-        // Page Switching Logic
         function showPage(pageId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -126,34 +134,44 @@
             if (tg) tg.HapticFeedback.impactOccurred('light');
         }
 
-        // Adsgram Logic
-        const AdController = window.Adsgram.init({ blockId: "24893", debug: false });
-
+        // --- RichAds Watch Function ---
         async function watchAd() {
             const btn = document.getElementById('adBtn');
             const statusMsg = document.getElementById('status-msg');
+            
             btn.disabled = true;
-            statusMsg.innerText = "Loading ad...";
+            statusMsg.innerText = "Beeksisa fidaa jira...";
+            statusMsg.style.color = "#fbbf24";
 
-            try {
-                const result = await AdController.show();
-                if (result && result.done) {
+            if (window.TelegramAdsController) {
+                window.TelegramAdsController.show().then((result) => {
+                    // Beeksisa xumureera
                     coins += 100;
                     adCount += 1;
                     updateDisplay();
                     statusMsg.style.color = "#22c55e";
                     statusMsg.innerText = "Baga gammadde! +100 Coins";
                     if (tg) tg.HapticFeedback.notificationOccurred('success');
-                }
-            } catch (e) {
-                statusMsg.style.color = "#ef4444";
-                statusMsg.innerText = "Ads not available right now.";
-            } finally {
-                setTimeout(() => { btn.disabled = false; statusMsg.innerText = ""; }, 3000);
+                }).catch((err) => {
+                    // Beeksisi yoo dhabame
+                    statusMsg.style.color = "#ef4444";
+                    statusMsg.innerText = "Beeksisi dhabameera, lammata yaali.";
+                    if (tg) tg.HapticFeedback.notificationOccurred('error');
+                }).finally(() => {
+                    setTimeout(() => { 
+                        btn.disabled = false; 
+                        statusMsg.innerText = ""; 
+                    }, 4000);
+                });
+            } else {
+                statusMsg.innerText = "Ad system not ready.";
+                btn.disabled = false;
             }
         }
 
         function copyInvite() {
+            const inviteLink = "https://t.me/Ethio_Coin1_bot";
+            navigator.clipboard.writeText(inviteLink);
             alert("Invite link copied!");
         }
 
