@@ -103,7 +103,7 @@
             <span class="text-xl">📺</span>
             <span class="text-[10px] font-bold">Ads</span>
         </button>
-        <button onclick="shareInvite()" class="nav-item flex flex-col items-center gap-1">
+        <button onclick="showPage('invite', this)" class="nav-item flex flex-col items-center gap-1">
             <span class="text-xl">🎁</span>
             <span class="text-[10px] font-bold">Invite</span>
         </button>
@@ -137,7 +137,6 @@
             if (tg) tg.HapticFeedback.impactOccurred('light');
         }
 
-        // --- Optimized Watch Function ---
         async function watchAd() {
             const btn = document.getElementById('adBtn');
             const statusMsg = document.getElementById('status-msg');
@@ -146,17 +145,17 @@
             statusMsg.innerText = "Beeksisa fidaa jira...";
             statusMsg.style.color = "#fbbf24";
 
-            // Jalqaba RichAds yaali
+            // 1. RichAds Yaali
             if (window.TelegramAdsController) {
-                window.TelegramAdsController.show().then((result) => {
-                    giveReward("RichAds Success");
+                window.TelegramAdsController.show().then(() => {
+                    giveReward();
                 }).catch((err) => {
-                    console.log("RichAds dhabame, Monetag yaalaa jiru...");
-                    // Yoo RichAds dide Monetag waami (Screenshot 2 ID: 10616539)
+                    console.log("RichAds dhabame, Monetag yaalaa jira...");
+                    // 2. Monetag Yaali yoo RichAds dide
                     if (typeof show_8907616 === 'function') { 
-                        show_8907616().then(() => giveReward("Monetag Success"));
+                        show_8907616().then(() => giveReward());
                     } else {
-                        statusMsg.innerText = "Beeksisi dhabame,yaali.";
+                        statusMsg.innerText = "Beeksisi amma hin jiru, lammata yaali.";
                         statusMsg.style.color = "#ef4444";
                     }
                 }).finally(() => {
@@ -165,8 +164,7 @@
             }
         }
 
-        function giveReward(source) {
-            console.log(source);
+        function giveReward() {
             coins += 100;
             adCount += 1;
             updateDisplay();
