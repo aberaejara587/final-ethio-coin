@@ -98,7 +98,7 @@
                     Beeksisa Jalqabi
                 </button>
                 
-                <p id="status-msg" class="mt-6 text-sm font-semibold min-h-[1.25rem]"></p>
+                <p id="status-msg" class="mt-6 text-sm font-semibold min-h-[1.25rem] transition-all"></p>
             </div>
         </section>
 
@@ -134,11 +134,13 @@
             localStorage.setItem('user_coins', coins);
         }
 
-        // Adsgram Initialize - Corrected
+        // --- SIRREEFFAMA ADSGRAM ---
         function initAdsgram() {
             if (window.Adsgram) {
-                // '24893' kana ID kee isa dhugaa dashboard Adsgram irratti argattuun bakka buusi
-                AdController = window.Adsgram.init({ blockId: "24893" });
+                AdController = window.Adsgram.init({ 
+                    blockId: "24893",
+                    debug: true // JALQABA IRRATTI TRUE GODHIITII YAALI
+                });
             } else {
                 console.error("Adsgram SDK not found");
             }
@@ -149,25 +151,31 @@
             const status = document.getElementById('status-msg');
 
             if (!AdController) initAdsgram();
-            if (!AdController) return;
+            if (!AdController) {
+                status.innerText = "Ad system not loaded!";
+                return;
+            }
 
             btn.disabled = true;
             status.innerText = "Beeksisa fidaa jira...";
             status.style.color = "#e5b12e";
 
             AdController.show().then((result) => {
-                // Beeksisa xumureera
+                // SUCCESS
                 coins += 100;
                 updateBalance();
                 status.innerText = "Gariidha! +100 ETC argatteetta.";
                 status.style.color = "#34d399";
                 tg.HapticFeedback.notificationOccurred('success');
             }).catch((result) => {
-                // Yoo rakkoon uumame ykn user beeksisa dhiise (skip)
+                // ERROR HANDLING - SIRREEFFAME
+                console.log("Adsgram Info:", result);
+                
                 if (result.error) {
-                    status.innerText = "Beeksisi dhabameera, lammata yaali.";
+                    // Dogoggora jiru asitti sitti hima
+                    status.innerText = "Error: " + (result.description || "Beeksisi dhabame");
                 } else {
-                    status.innerText = "Beeksisa xumuruu qabda!";
+                    status.innerText = "Beeksisa dhiisteetta (Skipped)!";
                 }
                 status.style.color = "#fb7185";
                 tg.HapticFeedback.notificationOccurred('error');
@@ -175,7 +183,7 @@
                 setTimeout(() => {
                     btn.disabled = false;
                     status.innerText = "";
-                }, 3000);
+                }, 4000);
             });
         }
 
