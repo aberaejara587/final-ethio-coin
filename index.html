@@ -10,7 +10,7 @@
         window.TelegramAdsController = new TelegramAdsController();
         window.TelegramAdsController.initialize({
             pubId: "1004916",
-            appId: "6538",
+            appId: "390561", // ID haaraa 'Telegram Interstitial Video'
         });
     </script>
 
@@ -134,7 +134,6 @@
             if (tg) tg.HapticFeedback.impactOccurred('light');
         }
 
-        // --- RichAds Watch Function ---
         async function watchAd() {
             const btn = document.getElementById('adBtn');
             const statusMsg = document.getElementById('status-msg');
@@ -145,7 +144,6 @@
 
             if (window.TelegramAdsController) {
                 window.TelegramAdsController.show().then((result) => {
-                    // Beeksisa xumureera
                     coins += 100;
                     adCount += 1;
                     updateDisplay();
@@ -153,7 +151,7 @@
                     statusMsg.innerText = "Baga gammadde! +100 Coins";
                     if (tg) tg.HapticFeedback.notificationOccurred('success');
                 }).catch((err) => {
-                    // Beeksisi yoo dhabame
+                    console.error("RichAds Error:", err);
                     statusMsg.style.color = "#ef4444";
                     statusMsg.innerText = "Beeksisi dhabameera, lammata yaali.";
                     if (tg) tg.HapticFeedback.notificationOccurred('error');
