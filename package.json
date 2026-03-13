@@ -5,18 +5,15 @@
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
-    "dev": "npx serve .",
-    "build": "echo 'No build step required'"
+    "dev": "npx serve ."
   },
   "keywords": [
     "telegram-mini-app",
-    "crypto",
     "ethio-coin",
     "adsgram"
   ],
-  "author": "Your Name",
+  "author": "aberaejara587",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "serve": "^14.2.1"
   }
