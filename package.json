@@ -4,8 +4,8 @@
   "description": "Final Ethio Coin Telegram Mini App",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve .",
-    "dev": "npx serve ."
+    "start": "serve .",
+    "dev": "serve ."
   },
   "keywords": [
     "telegram-mini-app",
@@ -14,7 +14,7 @@
   ],
   "author": "aberaejara587",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "serve": "^14.2.1"
   }
 }
