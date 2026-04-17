@@ -1,199 +1,189 @@
-<!DOCTYPE html>
-<html lang="om">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ethio Coin Bot</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/adsgram-adbox.js"></script>
-    <style>
-        body {
-            background-color: #0f172a;
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow-x: hidden;
-            user-select: none;
-        }
-        .page { display: none; }
-        .page.active { display: block; }
-        .nav-item.active { color: #e5b12e; border-top: 2px solid #e5b12e; }
-        .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none;
-        }
-    </style>
-</head>
-<body>
-    <canvas id="particles-canvas"></canvas>
+using System;
+using System.Globalization;
+using System.Windows.Forms;
 
-    <header class="p-6 text-center">
-        <h1 class="text-gray-400 text-sm font-medium mb-1">Total Balance</h1>
-        <div class="flex items-center justify-center gap-2">
-            <span class="text-4xl font-bold text-yellow-500" id="total-balance">0</span>
-            <span class="text-xl font-bold text-yellow-600">EC</span>
-        </div>
-    </header>
+namespace AberaCalculator1
+{
+    public partial class Form1 : Form
+    {
+        private double _accumulator = 0.0;
+        private string _pendingOperator = string.Empty;
+        private bool _isNewEntry = true;
 
-    <main class="px-4 pb-24">
-        <section id="page-home" class="page active space-y-6">
-            <div class="glass rounded-3xl p-8 text-center">
-                <div class="relative inline-block mb-4">
-                    <svg class="w-32 h-32 transform -rotate-90">
-                        <circle cx="64" cy="64" r="24" stroke="currentColor" stroke-width="4" fill="transparent" class="text-gray-700"/>
-                        <circle id="quest-progress" cx="64" cy="64" r="24" stroke="currentColor" stroke-width="4" fill="transparent" 
-                            stroke-dasharray="150.8" stroke-dashoffset="150.8" class="text-yellow-500 transition-all duration-500"/>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <span id="quest-count" class="text-sm font-bold">0/10</span>
-                    </div>
-                </div>
-                <h2 class="text-xl font-bold mb-2">Daily Quest</h2>
-                <button id="ad-btn" class="w-full py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-2xl transition-all active:scale-95">
-                    Watch Ad (+100 EC)
-                </button>
-                <p id="status-msg" class="mt-3 text-sm h-5"></p>
-            </div>
-        </section>
+        public Form1()
+        {
+            InitializeComponent();
 
-        <section id="page-invite" class="page space-y-6">
-            <div class="glass rounded-3xl p-6">
-                <h2 class="text-2xl font-bold mb-4">Invite Friends</h2>
-                <div class="space-y-3">
-                    <button id="share-btn" class="w-full py-4 bg-blue-600 font-bold rounded-2xl">Share on Telegram</button>
-                    <button id="copy-btn" class="w-full py-4 border border-gray-600 font-bold rounded-2xl flex items-center justify-center gap-2">
-                        <span>Copy Link</span>
-                    </button>
-                </div>
-            </div>
-        </section>
+            // Initialize display
+            txtDisplay.Text = "0";
 
-        <section id="page-withdraw" class="page">
-            <div class="glass rounded-3xl p-6">
-                <h2 class="text-2xl font-bold mb-4">Withdraw</h2>
-                <div class="p-4 bg-black/30 rounded-xl mb-6">
-                    <p class="text-sm text-gray-400">Min. Withdrawal</p>
-                    <p class="text-xl font-bold text-yellow-500">10,000 EC</p>
-                </div>
-                <button id="withdraw-btn" class="w-full py-4 bg-green-600 font-bold rounded-2xl">Withdraw Now</button>
-            </div>
-        </section>
-    </main>
+            // Wire up numeric buttons
+            btn0.Click += Digit_Click;
+            btn1.Click += Digit_Click;
+            btn2.Click += Digit_Click;
+            btn3.Click += Digit_Click;
+            btn4.Click += Digit_Click;
+            btn5.Click += Digit_Click;
+            btn6.Click += Digit_Click;
+            btn7.Click += Digit_Click;
+            btn8.Click += Digit_Click;
+            btn9.Click += Digit_Click;
 
-    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/10 flex justify-around p-3 z-50">
-        <button class="nav-item active flex flex-col items-center" data-page="home">
-            <span class="text-xs">Home</span>
-        </button>
-        <button class="nav-item flex flex-col items-center" data-page="invite">
-            <span class="text-xs">Invite</span>
-        </button>
-        <button class="nav-item flex flex-col items-center" data-page="withdraw">
-            <span class="text-xs">Wallet</span>
-        </button>
-    </nav>
+            // Other buttons
+            btnDot.Click += BtnDot_Click;
+            btnClear.Click += BtnClear_Click;
+            btnBackspace.Click += BtnBackspace_Click;
+            btnPercent.Click += BtnPercent_Click;
 
-    <script>
-        // --- State Management ---
-        let coins = parseInt(localStorage.getItem('user_coins')) || 0;
-        let adCount = parseInt(localStorage.getItem('ad_count')) || 0;
-        const tg = window.Telegram?.WebApp;
-        if (tg) tg.expand();
-
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "24893", debug: false }) : null;
-
-        // --- UI Updates ---
-        function updateDisplay() {
-            document.getElementById('total-balance').textContent = coins.toLocaleString();
-            const progress = Math.min(adCount, 10);
-            const offset = 150.8 - (progress / 10) * 150.8;
-            document.getElementById('quest-progress').setAttribute('stroke-dashoffset', offset);
-            document.getElementById('quest-count').textContent = `${progress}/10`;
-            localStorage.setItem('user_coins', coins);
-            localStorage.setItem('ad_count', adCount);
+            // Operators
+            btnPlus.Click += Operator_Click;
+            btnMinus.Click += Operator_Click;
+            btnMultiply.Click += Operator_Click;
+            btnDivide.Click += Operator_Click;
+            btnEquals.Click += BtnEquals_Click;
         }
 
-        // --- Navigation ---
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        private void Digit_Click(object? sender, EventArgs e)
+        {
+            if (sender is not Button btn) return;
+
+            if (_isNewEntry || txtDisplay.Text == "0")
+            {
+                txtDisplay.Text = btn.Text;
+                _isNewEntry = false;
+            }
+            else
+            {
+                txtDisplay.Text += btn.Text;
+            }
         }
 
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => showPage(item.getAttribute('data-page')));
-        });
+        private void BtnDot_Click(object? sender, EventArgs e)
+        {
+            if (_isNewEntry)
+            {
+                txtDisplay.Text = "0.";
+                _isNewEntry = false;
+                return;
+            }
 
-        // --- Ad Logic ---
-        async function watchAd() {
-            const btn = document.getElementById('ad-btn');
-            const msg = document.getElementById('status-msg');
-            if (!AdController) return msg.textContent = "Ad Error";
+            if (!txtDisplay.Text.Contains("."))
+                txtDisplay.Text += ".";
+        }
 
-            btn.disabled = true;
-            msg.textContent = "Loading...";
+        private void Operator_Click(object? sender, EventArgs e)
+        {
+            if (sender is not Button btn) return;
 
-            try {
-                const result = await AdController.show();
-                if (result?.done) {
-                    coins += 100; adCount++; updateDisplay();
-                    msg.textContent = "Success! +100 EC";
-                    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            try
+            {
+                double current = double.Parse(txtDisplay.Text, CultureInfo.InvariantCulture);
+
+                if (!string.IsNullOrEmpty(_pendingOperator) && !_isNewEntry)
+                {
+                    // perform previous operation
+                    _accumulator = Calculate(_accumulator, current, _pendingOperator);
+                    txtDisplay.Text = _accumulator.ToString(CultureInfo.InvariantCulture);
                 }
-            } catch (e) { msg.textContent = "Try again later"; }
-            finally { 
-                setTimeout(() => { btn.disabled = false; msg.textContent = ""; }, 3000); 
+                else
+                {
+                    _accumulator = current;
+                }
+
+                _pendingOperator = btn.Text;
+                _isNewEntry = true;
+            }
+            catch
+            {
+                txtDisplay.Text = "Error";
+                _isNewEntry = true;
+                _pendingOperator = string.Empty;
+                _accumulator = 0.0;
             }
         }
-        document.getElementById('ad-btn').addEventListener('click', watchAd);
 
-        // --- Buttons ---
-        document.getElementById('copy-btn').addEventListener('click', () => {
-            navigator.clipboard.writeText("https://t.me/Ethio_Coin1_bot").then(() => {
-                alert("Link Copied!");
-                if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            });
-        });
+        private void BtnEquals_Click(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_pendingOperator)) return;
 
-        document.getElementById('share-btn').addEventListener('click', () => {
-            const url = "https://t.me/share/url?url=https://t.me/Ethio_Coin1_bot&text=Kootu EC walitti qabannu!";
-            tg ? tg.openTelegramLink(url) : window.open(url);
-        });
+            try
+            {
+                double second = double.Parse(txtDisplay.Text, CultureInfo.InvariantCulture);
+                double result = Calculate(_accumulator, second, _pendingOperator);
+                txtDisplay.Text = result.ToString(CultureInfo.InvariantCulture);
 
-        document.getElementById('withdraw-btn').addEventListener('click', () => {
-            if (coins >= 10000) alert("Request Sent!");
-            else alert(`Minimum 10,000 EC barbaachisa!`);
-        });
-
-        // --- Particles ---
-        function initParticles() {
-            const canvas = document.getElementById('particles-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let pts = [];
-            for(let i=0; i<40; i++) pts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.2, vy: (Math.random()-0.5)*0.2});
-            function anim() {
-                ctx.clearRect(0,0,canvas.width, canvas.height);
-                pts.forEach(p => {
-                    p.x+=p.vx; p.y+=p.vy;
-                    if(p.x<0 || p.x>canvas.width) p.vx*=-1;
-                    if(p.y<0 || p.y>canvas.height) p.vy*=-1;
-                    ctx.fillStyle = "rgba(229,177,46,0.3)";
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2); ctx.fill();
-                });
-                requestAnimationFrame(anim);
+                // Reset state so user can continue from result
+                _accumulator = result;
+                _pendingOperator = string.Empty;
+                _isNewEntry = true;
             }
-            anim();
+            catch
+            {
+                txtDisplay.Text = "Error";
+                _isNewEntry = true;
+                _pendingOperator = string.Empty;
+                _accumulator = 0.0;
+            }
         }
 
-        updateDisplay();
-        initParticles();
-    </script>
-</body>
-</html>
+        private void BtnClear_Click(object? sender, EventArgs e)
+        {
+            txtDisplay.Text = "0";
+            _accumulator = 0.0;
+            _pendingOperator = string.Empty;
+            _isNewEntry = true;
+        }
+
+        private void BtnBackspace_Click(object? sender, EventArgs e)
+        {
+            if (_isNewEntry)
+            {
+                txtDisplay.Text = "0";
+                return;
+            }
+
+            if (txtDisplay.Text.Length <= 1)
+            {
+                txtDisplay.Text = "0";
+                _isNewEntry = true;
+            }
+            else
+            {
+                txtDisplay.Text = txtDisplay.Text[..^1];
+            }
+        }
+
+        private void BtnPercent_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                double value = double.Parse(txtDisplay.Text, CultureInfo.InvariantCulture);
+                value = value / 100.0;
+                txtDisplay.Text = value.ToString(CultureInfo.InvariantCulture);
+                _isNewEntry = true;
+            }
+            catch
+            {
+                txtDisplay.Text = "Error";
+                _isNewEntry = true;
+            }
+        }
+
+        private static double Calculate(double left, double right, string op)
+        {
+            return op switch
+            {
+                "+" => left + right,
+                "-" => left - right,
+                "*" => left * right,
+                "/" => right == 0 ? throw new DivideByZeroException() : left / right,
+                _ => right
+            };
+        }
+
+        private void txtDisplay_TextChanged(object sender, EventArgs e)
+        {
+            // kept intentionally empty - UI update only
+        }
+    }
+}
